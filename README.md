@@ -1,5 +1,7 @@
 # swift-vulkan
 
+This fork adds Windows support.
+
 A natural Swift interface for Vulkan.
 
 Its aim is to be a lightweight wrapper around Vulkan, yet remove many of the complexities of using the C API directly.
