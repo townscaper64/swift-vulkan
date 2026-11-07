@@ -55,7 +55,7 @@ To build swift-vulkan on Windows use this command:
 ```powershell
 swift build -Xcc -I"C:\path\to\vulkan\Include"
 ```
-To build swift-vulkan with CGLFW:
+To build swift-vulkan with CGLFW(located in Demos\swift-vulkan-demos)):
 ```powershell
 swift build -Xcc -I"C:\path\to\vulkan\Include" -Xcc -I"C:\path\to\glfw3\include" -Xlinker /LIBPATH:"C:\path\to\glfw3\lib"
 ```
