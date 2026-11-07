@@ -218,18 +218,18 @@ public struct ComponentMapping: CStructConvertible {
     }
 
     init(cStruct: VkComponentMapping) {
-        self.r = ComponentSwizzle(rawValue: cStruct.r.rawValue)!
-        self.g = ComponentSwizzle(rawValue: cStruct.g.rawValue)!
-        self.b = ComponentSwizzle(rawValue: cStruct.b.rawValue)!
-        self.a = ComponentSwizzle(rawValue: cStruct.a.rawValue)!
+        self.r = ComponentSwizzle(rawValue: vkEnumValue(cStruct.r.rawValue))!
+        self.g = ComponentSwizzle(rawValue: vkEnumValue(cStruct.g.rawValue))!
+        self.b = ComponentSwizzle(rawValue: vkEnumValue(cStruct.b.rawValue))!
+        self.a = ComponentSwizzle(rawValue: vkEnumValue(cStruct.a.rawValue))!
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkComponentMapping>) throws -> R) rethrows -> R {
         var cStruct = VkComponentMapping()
-        cStruct.r = VkComponentSwizzle(rawValue: self.r.rawValue)
-        cStruct.g = VkComponentSwizzle(rawValue: self.g.rawValue)
-        cStruct.b = VkComponentSwizzle(rawValue: self.b.rawValue)
-        cStruct.a = VkComponentSwizzle(rawValue: self.a.rawValue)
+        cStruct.r = VkComponentSwizzle(rawValue: vkEnumRaw(self.r.rawValue))
+        cStruct.g = VkComponentSwizzle(rawValue: vkEnumRaw(self.g.rawValue))
+        cStruct.b = VkComponentSwizzle(rawValue: vkEnumRaw(self.b.rawValue))
+        cStruct.a = VkComponentSwizzle(rawValue: vkEnumRaw(self.a.rawValue))
         return try body(&cStruct)
     }
 }
@@ -611,7 +611,7 @@ public struct PhysicalDeviceProperties: CStructConvertible {
         self.driverVersion = cStruct.driverVersion
         self.vendorID = cStruct.vendorID
         self.deviceID = cStruct.deviceID
-        self.deviceType = PhysicalDeviceType(rawValue: cStruct.deviceType.rawValue)!
+        self.deviceType = PhysicalDeviceType(rawValue: vkEnumValue(cStruct.deviceType.rawValue))!
         self.deviceName = String(unsafeBytesOf: cStruct.deviceName)
         self.pipelineCacheUUID = cStruct.pipelineCacheUUID
         self.limits = PhysicalDeviceLimits(cStruct: cStruct.limits)
@@ -626,7 +626,7 @@ public struct PhysicalDeviceProperties: CStructConvertible {
                 cStruct.driverVersion = self.driverVersion
                 cStruct.vendorID = self.vendorID
                 cStruct.deviceID = self.deviceID
-                cStruct.deviceType = VkPhysicalDeviceType(rawValue: self.deviceType.rawValue)
+                cStruct.deviceType = VkPhysicalDeviceType(rawValue: vkEnumRaw(self.deviceType.rawValue))
                 cStruct.deviceName = self.deviceName.unsafeBytesCopy()
                 cStruct.pipelineCacheUUID = self.pipelineCacheUUID
                 cStruct.limits = ptr_limits.pointee
@@ -1433,7 +1433,7 @@ public struct DescriptorImageInfo: CStructConvertible {
         var cStruct = VkDescriptorImageInfo()
         cStruct.sampler = self.sampler.handle
         cStruct.imageView = self.imageView.handle
-        cStruct.imageLayout = VkImageLayout(rawValue: self.imageLayout.rawValue)
+        cStruct.imageLayout = VkImageLayout(rawValue: vkEnumRaw(self.imageLayout.rawValue))
         return try body(&cStruct)
     }
 }
@@ -1471,7 +1471,7 @@ public struct WriteDescriptorSet: CStructConvertible {
                     cStruct.dstBinding = self.dstBinding
                     cStruct.dstArrayElement = self.dstArrayElement
                     cStruct.descriptorCount = UInt32(ptr_imageInfo.count)
-                    cStruct.descriptorType = VkDescriptorType(rawValue: self.descriptorType.rawValue)
+                    cStruct.descriptorType = VkDescriptorType(rawValue: vkEnumRaw(self.descriptorType.rawValue))
                     cStruct.pImageInfo = ptr_imageInfo.baseAddress
                     cStruct.pBufferInfo = ptr_bufferInfo.baseAddress
                     cStruct.pTexelBufferView = ptr_texelBufferView.baseAddress
@@ -1540,7 +1540,7 @@ public struct BufferCreateInfo: CStructConvertible {
         self.flags = BufferCreateFlags(rawValue: cStruct.flags)
         self.size = cStruct.size
         self.usage = BufferUsageFlags(rawValue: cStruct.usage)
-        self.sharingMode = SharingMode(rawValue: cStruct.sharingMode.rawValue)!
+        self.sharingMode = SharingMode(rawValue: vkEnumValue(cStruct.sharingMode.rawValue))!
         self.queueFamilyIndices = Array(UnsafeBufferPointer(start: cStruct.pQueueFamilyIndices, count: Int(cStruct.queueFamilyIndexCount)))
     }
 
@@ -1552,7 +1552,7 @@ public struct BufferCreateInfo: CStructConvertible {
             cStruct.flags = self.flags.rawValue
             cStruct.size = self.size
             cStruct.usage = self.usage.rawValue
-            cStruct.sharingMode = VkSharingMode(rawValue: self.sharingMode.rawValue)
+            cStruct.sharingMode = VkSharingMode(rawValue: vkEnumRaw(self.sharingMode.rawValue))
             cStruct.queueFamilyIndexCount = UInt32(ptr_queueFamilyIndices.count)
             cStruct.pQueueFamilyIndices = ptr_queueFamilyIndices.baseAddress
             return try body(&cStruct)
@@ -1584,7 +1584,7 @@ public struct BufferViewCreateInfo: CStructConvertible {
         cStruct.pNext = nil
         cStruct.flags = self.flags.rawValue
         cStruct.buffer = self.buffer.handle
-        cStruct.format = VkFormat(rawValue: self.format.rawValue)
+        cStruct.format = VkFormat(rawValue: vkEnumRaw(self.format.rawValue))
         cStruct.offset = self.offset
         cStruct.range = self.range
         return try body(&cStruct)
@@ -1781,8 +1781,8 @@ public struct ImageMemoryBarrier: CStructConvertible {
             cStruct.pNext = nil
             cStruct.srcAccessMask = self.srcAccessMask.rawValue
             cStruct.dstAccessMask = self.dstAccessMask.rawValue
-            cStruct.oldLayout = VkImageLayout(rawValue: self.oldLayout.rawValue)
-            cStruct.newLayout = VkImageLayout(rawValue: self.newLayout.rawValue)
+            cStruct.oldLayout = VkImageLayout(rawValue: vkEnumRaw(self.oldLayout.rawValue))
+            cStruct.newLayout = VkImageLayout(rawValue: vkEnumRaw(self.newLayout.rawValue))
             cStruct.srcQueueFamilyIndex = self.srcQueueFamilyIndex
             cStruct.dstQueueFamilyIndex = self.dstQueueFamilyIndex
             cStruct.image = self.image.handle
@@ -1825,17 +1825,17 @@ public struct ImageCreateInfo: CStructConvertible {
 
     init(cStruct: VkImageCreateInfo) {
         self.flags = ImageCreateFlags(rawValue: cStruct.flags)
-        self.imageType = ImageType(rawValue: cStruct.imageType.rawValue)!
-        self.format = Format(rawValue: cStruct.format.rawValue)!
+        self.imageType = ImageType(rawValue: vkEnumValue(cStruct.imageType.rawValue))!
+        self.format = Format(rawValue: vkEnumValue(cStruct.format.rawValue))!
         self.extent = Extent3D(cStruct: cStruct.extent)
         self.mipLevels = cStruct.mipLevels
         self.arrayLayers = cStruct.arrayLayers
-        self.samples = SampleCountFlags(rawValue: cStruct.samples.rawValue)
-        self.tiling = ImageTiling(rawValue: cStruct.tiling.rawValue)!
+        self.samples = SampleCountFlags(rawValue: vkEnumValue(cStruct.samples.rawValue))
+        self.tiling = ImageTiling(rawValue: vkEnumValue(cStruct.tiling.rawValue))!
         self.usage = ImageUsageFlags(rawValue: cStruct.usage)
-        self.sharingMode = SharingMode(rawValue: cStruct.sharingMode.rawValue)!
+        self.sharingMode = SharingMode(rawValue: vkEnumValue(cStruct.sharingMode.rawValue))!
         self.queueFamilyIndices = Array(UnsafeBufferPointer(start: cStruct.pQueueFamilyIndices, count: Int(cStruct.queueFamilyIndexCount)))
-        self.initialLayout = ImageLayout(rawValue: cStruct.initialLayout.rawValue)!
+        self.initialLayout = ImageLayout(rawValue: vkEnumValue(cStruct.initialLayout.rawValue))!
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkImageCreateInfo>) throws -> R) rethrows -> R {
@@ -1845,18 +1845,18 @@ public struct ImageCreateInfo: CStructConvertible {
                 cStruct.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO
                 cStruct.pNext = nil
                 cStruct.flags = self.flags.rawValue
-                cStruct.imageType = VkImageType(rawValue: self.imageType.rawValue)
-                cStruct.format = VkFormat(rawValue: self.format.rawValue)
+                cStruct.imageType = VkImageType(rawValue: vkEnumRaw(self.imageType.rawValue))
+                cStruct.format = VkFormat(rawValue: vkEnumRaw(self.format.rawValue))
                 cStruct.extent = ptr_extent.pointee
                 cStruct.mipLevels = self.mipLevels
                 cStruct.arrayLayers = self.arrayLayers
-                cStruct.samples = VkSampleCountFlagBits(rawValue: self.samples.rawValue)
-                cStruct.tiling = VkImageTiling(rawValue: self.tiling.rawValue)
+                cStruct.samples = VkSampleCountFlagBits(rawValue: vkEnumRaw(self.samples.rawValue))
+                cStruct.tiling = VkImageTiling(rawValue: vkEnumRaw(self.tiling.rawValue))
                 cStruct.usage = self.usage.rawValue
-                cStruct.sharingMode = VkSharingMode(rawValue: self.sharingMode.rawValue)
+                cStruct.sharingMode = VkSharingMode(rawValue: vkEnumRaw(self.sharingMode.rawValue))
                 cStruct.queueFamilyIndexCount = UInt32(ptr_queueFamilyIndices.count)
                 cStruct.pQueueFamilyIndices = ptr_queueFamilyIndices.baseAddress
-                cStruct.initialLayout = VkImageLayout(rawValue: self.initialLayout.rawValue)
+                cStruct.initialLayout = VkImageLayout(rawValue: vkEnumRaw(self.initialLayout.rawValue))
                 return try body(&cStruct)
             }
         }
@@ -1919,8 +1919,8 @@ public struct ImageViewCreateInfo: CStructConvertible {
                 cStruct.pNext = nil
                 cStruct.flags = self.flags.rawValue
                 cStruct.image = self.image.handle
-                cStruct.viewType = VkImageViewType(rawValue: self.viewType.rawValue)
-                cStruct.format = VkFormat(rawValue: self.format.rawValue)
+                cStruct.viewType = VkImageViewType(rawValue: vkEnumRaw(self.viewType.rawValue))
+                cStruct.format = VkFormat(rawValue: vkEnumRaw(self.format.rawValue))
                 cStruct.components = ptr_components.pointee
                 cStruct.subresourceRange = ptr_subresourceRange.pointee
                 return try body(&cStruct)
@@ -2363,7 +2363,7 @@ public struct DescriptorSetLayoutBinding: CStructConvertible {
         try (self.immutableSamplers?.map{ $0.handle }).withOptionalUnsafeBufferPointer { ptr_immutableSamplers in
             var cStruct = VkDescriptorSetLayoutBinding()
             cStruct.binding = self.binding
-            cStruct.descriptorType = VkDescriptorType(rawValue: self.descriptorType.rawValue)
+            cStruct.descriptorType = VkDescriptorType(rawValue: vkEnumRaw(self.descriptorType.rawValue))
             cStruct.descriptorCount = UInt32(ptr_immutableSamplers.count)
             cStruct.stageFlags = self.stageFlags.rawValue
             cStruct.pImmutableSamplers = ptr_immutableSamplers.baseAddress
@@ -2409,13 +2409,13 @@ public struct DescriptorPoolSize: CStructConvertible {
     }
 
     init(cStruct: VkDescriptorPoolSize) {
-        self.type = DescriptorType(rawValue: cStruct.type.rawValue)!
+        self.type = DescriptorType(rawValue: vkEnumValue(cStruct.type.rawValue))!
         self.descriptorCount = cStruct.descriptorCount
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkDescriptorPoolSize>) throws -> R) rethrows -> R {
         var cStruct = VkDescriptorPoolSize()
-        cStruct.type = VkDescriptorType(rawValue: self.type.rawValue)
+        cStruct.type = VkDescriptorType(rawValue: vkEnumRaw(self.type.rawValue))
         cStruct.descriptorCount = self.descriptorCount
         return try body(&cStruct)
     }
@@ -2563,7 +2563,7 @@ public struct PipelineShaderStageCreateInfo: CStructConvertible {
                 cStruct.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO
                 cStruct.pNext = nil
                 cStruct.flags = self.flags.rawValue
-                cStruct.stage = VkShaderStageFlagBits(rawValue: self.stage.rawValue)
+                cStruct.stage = VkShaderStageFlagBits(rawValue: vkEnumRaw(self.stage.rawValue))
                 cStruct.module = self.module.handle
                 cStruct.pName = cString_name
                 cStruct.pSpecializationInfo = ptr_specializationInfo
@@ -2622,14 +2622,14 @@ public struct VertexInputBindingDescription: CStructConvertible {
     init(cStruct: VkVertexInputBindingDescription) {
         self.binding = cStruct.binding
         self.stride = cStruct.stride
-        self.inputRate = VertexInputRate(rawValue: cStruct.inputRate.rawValue)!
+        self.inputRate = VertexInputRate(rawValue: vkEnumValue(cStruct.inputRate.rawValue))!
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkVertexInputBindingDescription>) throws -> R) rethrows -> R {
         var cStruct = VkVertexInputBindingDescription()
         cStruct.binding = self.binding
         cStruct.stride = self.stride
-        cStruct.inputRate = VkVertexInputRate(rawValue: self.inputRate.rawValue)
+        cStruct.inputRate = VkVertexInputRate(rawValue: vkEnumRaw(self.inputRate.rawValue))
         return try body(&cStruct)
     }
 }
@@ -2652,7 +2652,7 @@ public struct VertexInputAttributeDescription: CStructConvertible {
     init(cStruct: VkVertexInputAttributeDescription) {
         self.location = cStruct.location
         self.binding = cStruct.binding
-        self.format = Format(rawValue: cStruct.format.rawValue)!
+        self.format = Format(rawValue: vkEnumValue(cStruct.format.rawValue))!
         self.offset = cStruct.offset
     }
 
@@ -2660,7 +2660,7 @@ public struct VertexInputAttributeDescription: CStructConvertible {
         var cStruct = VkVertexInputAttributeDescription()
         cStruct.location = self.location
         cStruct.binding = self.binding
-        cStruct.format = VkFormat(rawValue: self.format.rawValue)
+        cStruct.format = VkFormat(rawValue: vkEnumRaw(self.format.rawValue))
         cStruct.offset = self.offset
         return try body(&cStruct)
     }
@@ -2717,7 +2717,7 @@ public struct PipelineInputAssemblyStateCreateInfo: CStructConvertible {
 
     init(cStruct: VkPipelineInputAssemblyStateCreateInfo) {
         self.flags = PipelineInputAssemblyStateCreateFlags(rawValue: cStruct.flags)
-        self.topology = PrimitiveTopology(rawValue: cStruct.topology.rawValue)!
+        self.topology = PrimitiveTopology(rawValue: vkEnumValue(cStruct.topology.rawValue))!
         self.primitiveRestartEnable = cStruct.primitiveRestartEnable == VK_TRUE
     }
 
@@ -2726,7 +2726,7 @@ public struct PipelineInputAssemblyStateCreateInfo: CStructConvertible {
         cStruct.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO
         cStruct.pNext = nil
         cStruct.flags = self.flags.rawValue
-        cStruct.topology = VkPrimitiveTopology(rawValue: self.topology.rawValue)
+        cStruct.topology = VkPrimitiveTopology(rawValue: vkEnumRaw(self.topology.rawValue))
         cStruct.primitiveRestartEnable = VkBool32(self.primitiveRestartEnable ? VK_TRUE : VK_FALSE)
         return try body(&cStruct)
     }
@@ -2827,9 +2827,9 @@ public struct PipelineRasterizationStateCreateInfo: CStructConvertible {
         self.flags = PipelineRasterizationStateCreateFlags(rawValue: cStruct.flags)
         self.depthClampEnable = cStruct.depthClampEnable == VK_TRUE
         self.rasterizerDiscardEnable = cStruct.rasterizerDiscardEnable == VK_TRUE
-        self.polygonMode = PolygonMode(rawValue: cStruct.polygonMode.rawValue)!
+        self.polygonMode = PolygonMode(rawValue: vkEnumValue(cStruct.polygonMode.rawValue))!
         self.cullMode = CullModeFlags(rawValue: cStruct.cullMode)
-        self.frontFace = FrontFace(rawValue: cStruct.frontFace.rawValue)!
+        self.frontFace = FrontFace(rawValue: vkEnumValue(cStruct.frontFace.rawValue))!
         self.depthBiasEnable = cStruct.depthBiasEnable == VK_TRUE
         self.depthBiasConstantFactor = cStruct.depthBiasConstantFactor
         self.depthBiasClamp = cStruct.depthBiasClamp
@@ -2844,9 +2844,9 @@ public struct PipelineRasterizationStateCreateInfo: CStructConvertible {
         cStruct.flags = self.flags.rawValue
         cStruct.depthClampEnable = VkBool32(self.depthClampEnable ? VK_TRUE : VK_FALSE)
         cStruct.rasterizerDiscardEnable = VkBool32(self.rasterizerDiscardEnable ? VK_TRUE : VK_FALSE)
-        cStruct.polygonMode = VkPolygonMode(rawValue: self.polygonMode.rawValue)
+        cStruct.polygonMode = VkPolygonMode(rawValue: vkEnumRaw(self.polygonMode.rawValue))
         cStruct.cullMode = self.cullMode.rawValue
-        cStruct.frontFace = VkFrontFace(rawValue: self.frontFace.rawValue)
+        cStruct.frontFace = VkFrontFace(rawValue: vkEnumRaw(self.frontFace.rawValue))
         cStruct.depthBiasEnable = VkBool32(self.depthBiasEnable ? VK_TRUE : VK_FALSE)
         cStruct.depthBiasConstantFactor = self.depthBiasConstantFactor
         cStruct.depthBiasClamp = self.depthBiasClamp
@@ -2879,7 +2879,7 @@ public struct PipelineMultisampleStateCreateInfo: CStructConvertible {
 
     init(cStruct: VkPipelineMultisampleStateCreateInfo) {
         self.flags = PipelineMultisampleStateCreateFlags(rawValue: cStruct.flags)
-        self.rasterizationSamples = SampleCountFlags(rawValue: cStruct.rasterizationSamples.rawValue)
+        self.rasterizationSamples = SampleCountFlags(rawValue: vkEnumValue(cStruct.rasterizationSamples.rawValue))
         self.sampleShadingEnable = cStruct.sampleShadingEnable == VK_TRUE
         self.minSampleShading = cStruct.minSampleShading
         self.sampleMask = cStruct.pSampleMask
@@ -2892,7 +2892,7 @@ public struct PipelineMultisampleStateCreateInfo: CStructConvertible {
         cStruct.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO
         cStruct.pNext = nil
         cStruct.flags = self.flags.rawValue
-        cStruct.rasterizationSamples = VkSampleCountFlagBits(rawValue: self.rasterizationSamples.rawValue)
+        cStruct.rasterizationSamples = VkSampleCountFlagBits(rawValue: vkEnumRaw(self.rasterizationSamples.rawValue))
         cStruct.sampleShadingEnable = VkBool32(self.sampleShadingEnable ? VK_TRUE : VK_FALSE)
         cStruct.minSampleShading = self.minSampleShading
         cStruct.pSampleMask = self.sampleMask
@@ -2927,24 +2927,24 @@ public struct PipelineColorBlendAttachmentState: CStructConvertible {
 
     init(cStruct: VkPipelineColorBlendAttachmentState) {
         self.blendEnable = cStruct.blendEnable == VK_TRUE
-        self.srcColorBlendFactor = BlendFactor(rawValue: cStruct.srcColorBlendFactor.rawValue)!
-        self.dstColorBlendFactor = BlendFactor(rawValue: cStruct.dstColorBlendFactor.rawValue)!
-        self.colorBlendOp = BlendOp(rawValue: cStruct.colorBlendOp.rawValue)!
-        self.srcAlphaBlendFactor = BlendFactor(rawValue: cStruct.srcAlphaBlendFactor.rawValue)!
-        self.dstAlphaBlendFactor = BlendFactor(rawValue: cStruct.dstAlphaBlendFactor.rawValue)!
-        self.alphaBlendOp = BlendOp(rawValue: cStruct.alphaBlendOp.rawValue)!
+        self.srcColorBlendFactor = BlendFactor(rawValue: vkEnumValue(cStruct.srcColorBlendFactor.rawValue))!
+        self.dstColorBlendFactor = BlendFactor(rawValue: vkEnumValue(cStruct.dstColorBlendFactor.rawValue))!
+        self.colorBlendOp = BlendOp(rawValue: vkEnumValue(cStruct.colorBlendOp.rawValue))!
+        self.srcAlphaBlendFactor = BlendFactor(rawValue: vkEnumValue(cStruct.srcAlphaBlendFactor.rawValue))!
+        self.dstAlphaBlendFactor = BlendFactor(rawValue: vkEnumValue(cStruct.dstAlphaBlendFactor.rawValue))!
+        self.alphaBlendOp = BlendOp(rawValue: vkEnumValue(cStruct.alphaBlendOp.rawValue))!
         self.colorWriteMask = ColorComponentFlags(rawValue: cStruct.colorWriteMask)
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkPipelineColorBlendAttachmentState>) throws -> R) rethrows -> R {
         var cStruct = VkPipelineColorBlendAttachmentState()
         cStruct.blendEnable = VkBool32(self.blendEnable ? VK_TRUE : VK_FALSE)
-        cStruct.srcColorBlendFactor = VkBlendFactor(rawValue: self.srcColorBlendFactor.rawValue)
-        cStruct.dstColorBlendFactor = VkBlendFactor(rawValue: self.dstColorBlendFactor.rawValue)
-        cStruct.colorBlendOp = VkBlendOp(rawValue: self.colorBlendOp.rawValue)
-        cStruct.srcAlphaBlendFactor = VkBlendFactor(rawValue: self.srcAlphaBlendFactor.rawValue)
-        cStruct.dstAlphaBlendFactor = VkBlendFactor(rawValue: self.dstAlphaBlendFactor.rawValue)
-        cStruct.alphaBlendOp = VkBlendOp(rawValue: self.alphaBlendOp.rawValue)
+        cStruct.srcColorBlendFactor = VkBlendFactor(rawValue: vkEnumRaw(self.srcColorBlendFactor.rawValue))
+        cStruct.dstColorBlendFactor = VkBlendFactor(rawValue: vkEnumRaw(self.dstColorBlendFactor.rawValue))
+        cStruct.colorBlendOp = VkBlendOp(rawValue: vkEnumRaw(self.colorBlendOp.rawValue))
+        cStruct.srcAlphaBlendFactor = VkBlendFactor(rawValue: vkEnumRaw(self.srcAlphaBlendFactor.rawValue))
+        cStruct.dstAlphaBlendFactor = VkBlendFactor(rawValue: vkEnumRaw(self.dstAlphaBlendFactor.rawValue))
+        cStruct.alphaBlendOp = VkBlendOp(rawValue: vkEnumRaw(self.alphaBlendOp.rawValue))
         cStruct.colorWriteMask = self.colorWriteMask.rawValue
         return try body(&cStruct)
     }
@@ -2970,7 +2970,7 @@ public struct PipelineColorBlendStateCreateInfo: CStructConvertible {
     init(cStruct: VkPipelineColorBlendStateCreateInfo) {
         self.flags = PipelineColorBlendStateCreateFlags(rawValue: cStruct.flags)
         self.logicOpEnable = cStruct.logicOpEnable == VK_TRUE
-        self.logicOp = LogicOp(rawValue: cStruct.logicOp.rawValue)!
+        self.logicOp = LogicOp(rawValue: vkEnumValue(cStruct.logicOp.rawValue))!
         self.attachments = UnsafeBufferPointer(start: cStruct.pAttachments, count: Int(cStruct.attachmentCount)).map{ PipelineColorBlendAttachmentState(cStruct: $0) }
         self.blendConstants = cStruct.blendConstants
     }
@@ -2982,7 +2982,7 @@ public struct PipelineColorBlendStateCreateInfo: CStructConvertible {
             cStruct.pNext = nil
             cStruct.flags = self.flags.rawValue
             cStruct.logicOpEnable = VkBool32(self.logicOpEnable ? VK_TRUE : VK_FALSE)
-            cStruct.logicOp = VkLogicOp(rawValue: self.logicOp.rawValue)
+            cStruct.logicOp = VkLogicOp(rawValue: vkEnumRaw(self.logicOp.rawValue))
             cStruct.attachmentCount = UInt32(ptr_attachments.count)
             cStruct.pAttachments = ptr_attachments.baseAddress
             cStruct.blendConstants = self.blendConstants
@@ -3004,11 +3004,11 @@ public struct PipelineDynamicStateCreateInfo: CStructConvertible {
 
     init(cStruct: VkPipelineDynamicStateCreateInfo) {
         self.flags = PipelineDynamicStateCreateFlags(rawValue: cStruct.flags)
-        self.dynamicStates = UnsafeBufferPointer(start: cStruct.pDynamicStates, count: Int(cStruct.dynamicStateCount)).map{ DynamicState(rawValue: $0.rawValue)! }
+        self.dynamicStates = UnsafeBufferPointer(start: cStruct.pDynamicStates, count: Int(cStruct.dynamicStateCount)).map{ DynamicState(rawValue: vkEnumValue($0.rawValue))! }
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkPipelineDynamicStateCreateInfo>) throws -> R) rethrows -> R {
-        try self.dynamicStates.map{ VkDynamicState(rawValue: $0.rawValue) }.withUnsafeBufferPointer { ptr_dynamicStates in
+        try self.dynamicStates.map{ VkDynamicState(rawValue: vkEnumRaw($0.rawValue)) }.withUnsafeBufferPointer { ptr_dynamicStates in
             var cStruct = VkPipelineDynamicStateCreateInfo()
             cStruct.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO
             cStruct.pNext = nil
@@ -3042,10 +3042,10 @@ public struct StencilOpState: CStructConvertible {
     }
 
     init(cStruct: VkStencilOpState) {
-        self.failOp = StencilOp(rawValue: cStruct.failOp.rawValue)!
-        self.passOp = StencilOp(rawValue: cStruct.passOp.rawValue)!
-        self.depthFailOp = StencilOp(rawValue: cStruct.depthFailOp.rawValue)!
-        self.compareOp = CompareOp(rawValue: cStruct.compareOp.rawValue)!
+        self.failOp = StencilOp(rawValue: vkEnumValue(cStruct.failOp.rawValue))!
+        self.passOp = StencilOp(rawValue: vkEnumValue(cStruct.passOp.rawValue))!
+        self.depthFailOp = StencilOp(rawValue: vkEnumValue(cStruct.depthFailOp.rawValue))!
+        self.compareOp = CompareOp(rawValue: vkEnumValue(cStruct.compareOp.rawValue))!
         self.compareMask = cStruct.compareMask
         self.writeMask = cStruct.writeMask
         self.reference = cStruct.reference
@@ -3053,10 +3053,10 @@ public struct StencilOpState: CStructConvertible {
 
     func withCStruct<R>(_ body: (UnsafePointer<VkStencilOpState>) throws -> R) rethrows -> R {
         var cStruct = VkStencilOpState()
-        cStruct.failOp = VkStencilOp(rawValue: self.failOp.rawValue)
-        cStruct.passOp = VkStencilOp(rawValue: self.passOp.rawValue)
-        cStruct.depthFailOp = VkStencilOp(rawValue: self.depthFailOp.rawValue)
-        cStruct.compareOp = VkCompareOp(rawValue: self.compareOp.rawValue)
+        cStruct.failOp = VkStencilOp(rawValue: vkEnumRaw(self.failOp.rawValue))
+        cStruct.passOp = VkStencilOp(rawValue: vkEnumRaw(self.passOp.rawValue))
+        cStruct.depthFailOp = VkStencilOp(rawValue: vkEnumRaw(self.depthFailOp.rawValue))
+        cStruct.compareOp = VkCompareOp(rawValue: vkEnumRaw(self.compareOp.rawValue))
         cStruct.compareMask = self.compareMask
         cStruct.writeMask = self.writeMask
         cStruct.reference = self.reference
@@ -3095,7 +3095,7 @@ public struct PipelineDepthStencilStateCreateInfo: CStructConvertible {
         self.flags = PipelineDepthStencilStateCreateFlags(rawValue: cStruct.flags)
         self.depthTestEnable = cStruct.depthTestEnable == VK_TRUE
         self.depthWriteEnable = cStruct.depthWriteEnable == VK_TRUE
-        self.depthCompareOp = CompareOp(rawValue: cStruct.depthCompareOp.rawValue)!
+        self.depthCompareOp = CompareOp(rawValue: vkEnumValue(cStruct.depthCompareOp.rawValue))!
         self.depthBoundsTestEnable = cStruct.depthBoundsTestEnable == VK_TRUE
         self.stencilTestEnable = cStruct.stencilTestEnable == VK_TRUE
         self.front = StencilOpState(cStruct: cStruct.front)
@@ -3113,7 +3113,7 @@ public struct PipelineDepthStencilStateCreateInfo: CStructConvertible {
                 cStruct.flags = self.flags.rawValue
                 cStruct.depthTestEnable = VkBool32(self.depthTestEnable ? VK_TRUE : VK_FALSE)
                 cStruct.depthWriteEnable = VkBool32(self.depthWriteEnable ? VK_TRUE : VK_FALSE)
-                cStruct.depthCompareOp = VkCompareOp(rawValue: self.depthCompareOp.rawValue)
+                cStruct.depthCompareOp = VkCompareOp(rawValue: vkEnumRaw(self.depthCompareOp.rawValue))
                 cStruct.depthBoundsTestEnable = VkBool32(self.depthBoundsTestEnable ? VK_TRUE : VK_FALSE)
                 cStruct.stencilTestEnable = VkBool32(self.stencilTestEnable ? VK_TRUE : VK_FALSE)
                 cStruct.front = ptr_front.pointee
@@ -3341,20 +3341,20 @@ public struct SamplerCreateInfo: CStructConvertible {
 
     init(cStruct: VkSamplerCreateInfo) {
         self.flags = SamplerCreateFlags(rawValue: cStruct.flags)
-        self.magFilter = Filter(rawValue: cStruct.magFilter.rawValue)!
-        self.minFilter = Filter(rawValue: cStruct.minFilter.rawValue)!
-        self.mipmapMode = SamplerMipmapMode(rawValue: cStruct.mipmapMode.rawValue)!
-        self.addressModeU = SamplerAddressMode(rawValue: cStruct.addressModeU.rawValue)!
-        self.addressModeV = SamplerAddressMode(rawValue: cStruct.addressModeV.rawValue)!
-        self.addressModeW = SamplerAddressMode(rawValue: cStruct.addressModeW.rawValue)!
+        self.magFilter = Filter(rawValue: vkEnumValue(cStruct.magFilter.rawValue))!
+        self.minFilter = Filter(rawValue: vkEnumValue(cStruct.minFilter.rawValue))!
+        self.mipmapMode = SamplerMipmapMode(rawValue: vkEnumValue(cStruct.mipmapMode.rawValue))!
+        self.addressModeU = SamplerAddressMode(rawValue: vkEnumValue(cStruct.addressModeU.rawValue))!
+        self.addressModeV = SamplerAddressMode(rawValue: vkEnumValue(cStruct.addressModeV.rawValue))!
+        self.addressModeW = SamplerAddressMode(rawValue: vkEnumValue(cStruct.addressModeW.rawValue))!
         self.mipLodBias = cStruct.mipLodBias
         self.anisotropyEnable = cStruct.anisotropyEnable == VK_TRUE
         self.maxAnisotropy = cStruct.maxAnisotropy
         self.compareEnable = cStruct.compareEnable == VK_TRUE
-        self.compareOp = CompareOp(rawValue: cStruct.compareOp.rawValue)!
+        self.compareOp = CompareOp(rawValue: vkEnumValue(cStruct.compareOp.rawValue))!
         self.minLod = cStruct.minLod
         self.maxLod = cStruct.maxLod
-        self.borderColor = BorderColor(rawValue: cStruct.borderColor.rawValue)!
+        self.borderColor = BorderColor(rawValue: vkEnumValue(cStruct.borderColor.rawValue))!
         self.unnormalizedCoordinates = cStruct.unnormalizedCoordinates == VK_TRUE
     }
 
@@ -3363,20 +3363,20 @@ public struct SamplerCreateInfo: CStructConvertible {
         cStruct.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO
         cStruct.pNext = nil
         cStruct.flags = self.flags.rawValue
-        cStruct.magFilter = VkFilter(rawValue: self.magFilter.rawValue)
-        cStruct.minFilter = VkFilter(rawValue: self.minFilter.rawValue)
-        cStruct.mipmapMode = VkSamplerMipmapMode(rawValue: self.mipmapMode.rawValue)
-        cStruct.addressModeU = VkSamplerAddressMode(rawValue: self.addressModeU.rawValue)
-        cStruct.addressModeV = VkSamplerAddressMode(rawValue: self.addressModeV.rawValue)
-        cStruct.addressModeW = VkSamplerAddressMode(rawValue: self.addressModeW.rawValue)
+        cStruct.magFilter = VkFilter(rawValue: vkEnumRaw(self.magFilter.rawValue))
+        cStruct.minFilter = VkFilter(rawValue: vkEnumRaw(self.minFilter.rawValue))
+        cStruct.mipmapMode = VkSamplerMipmapMode(rawValue: vkEnumRaw(self.mipmapMode.rawValue))
+        cStruct.addressModeU = VkSamplerAddressMode(rawValue: vkEnumRaw(self.addressModeU.rawValue))
+        cStruct.addressModeV = VkSamplerAddressMode(rawValue: vkEnumRaw(self.addressModeV.rawValue))
+        cStruct.addressModeW = VkSamplerAddressMode(rawValue: vkEnumRaw(self.addressModeW.rawValue))
         cStruct.mipLodBias = self.mipLodBias
         cStruct.anisotropyEnable = VkBool32(self.anisotropyEnable ? VK_TRUE : VK_FALSE)
         cStruct.maxAnisotropy = self.maxAnisotropy
         cStruct.compareEnable = VkBool32(self.compareEnable ? VK_TRUE : VK_FALSE)
-        cStruct.compareOp = VkCompareOp(rawValue: self.compareOp.rawValue)
+        cStruct.compareOp = VkCompareOp(rawValue: vkEnumRaw(self.compareOp.rawValue))
         cStruct.minLod = self.minLod
         cStruct.maxLod = self.maxLod
-        cStruct.borderColor = VkBorderColor(rawValue: self.borderColor.rawValue)
+        cStruct.borderColor = VkBorderColor(rawValue: vkEnumRaw(self.borderColor.rawValue))
         cStruct.unnormalizedCoordinates = VkBool32(self.unnormalizedCoordinates ? VK_TRUE : VK_FALSE)
         return try body(&cStruct)
     }
@@ -3427,7 +3427,7 @@ public struct CommandBufferAllocateInfo: CStructConvertible {
         cStruct.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO
         cStruct.pNext = nil
         cStruct.commandPool = self.commandPool.handle
-        cStruct.level = VkCommandBufferLevel(rawValue: self.level.rawValue)
+        cStruct.level = VkCommandBufferLevel(rawValue: vkEnumRaw(self.level.rawValue))
         cStruct.commandBufferCount = self.commandBufferCount
         return try body(&cStruct)
     }
@@ -3603,27 +3603,27 @@ public struct AttachmentDescription: CStructConvertible {
 
     init(cStruct: VkAttachmentDescription) {
         self.flags = AttachmentDescriptionFlags(rawValue: cStruct.flags)
-        self.format = Format(rawValue: cStruct.format.rawValue)!
-        self.samples = SampleCountFlags(rawValue: cStruct.samples.rawValue)
-        self.loadOp = AttachmentLoadOp(rawValue: cStruct.loadOp.rawValue)!
-        self.storeOp = AttachmentStoreOp(rawValue: cStruct.storeOp.rawValue)!
-        self.stencilLoadOp = AttachmentLoadOp(rawValue: cStruct.stencilLoadOp.rawValue)!
-        self.stencilStoreOp = AttachmentStoreOp(rawValue: cStruct.stencilStoreOp.rawValue)!
-        self.initialLayout = ImageLayout(rawValue: cStruct.initialLayout.rawValue)!
-        self.finalLayout = ImageLayout(rawValue: cStruct.finalLayout.rawValue)!
+        self.format = Format(rawValue: vkEnumValue(cStruct.format.rawValue))!
+        self.samples = SampleCountFlags(rawValue: vkEnumValue(cStruct.samples.rawValue))
+        self.loadOp = AttachmentLoadOp(rawValue: vkEnumValue(cStruct.loadOp.rawValue))!
+        self.storeOp = AttachmentStoreOp(rawValue: vkEnumValue(cStruct.storeOp.rawValue))!
+        self.stencilLoadOp = AttachmentLoadOp(rawValue: vkEnumValue(cStruct.stencilLoadOp.rawValue))!
+        self.stencilStoreOp = AttachmentStoreOp(rawValue: vkEnumValue(cStruct.stencilStoreOp.rawValue))!
+        self.initialLayout = ImageLayout(rawValue: vkEnumValue(cStruct.initialLayout.rawValue))!
+        self.finalLayout = ImageLayout(rawValue: vkEnumValue(cStruct.finalLayout.rawValue))!
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkAttachmentDescription>) throws -> R) rethrows -> R {
         var cStruct = VkAttachmentDescription()
         cStruct.flags = self.flags.rawValue
-        cStruct.format = VkFormat(rawValue: self.format.rawValue)
-        cStruct.samples = VkSampleCountFlagBits(rawValue: self.samples.rawValue)
-        cStruct.loadOp = VkAttachmentLoadOp(rawValue: self.loadOp.rawValue)
-        cStruct.storeOp = VkAttachmentStoreOp(rawValue: self.storeOp.rawValue)
-        cStruct.stencilLoadOp = VkAttachmentLoadOp(rawValue: self.stencilLoadOp.rawValue)
-        cStruct.stencilStoreOp = VkAttachmentStoreOp(rawValue: self.stencilStoreOp.rawValue)
-        cStruct.initialLayout = VkImageLayout(rawValue: self.initialLayout.rawValue)
-        cStruct.finalLayout = VkImageLayout(rawValue: self.finalLayout.rawValue)
+        cStruct.format = VkFormat(rawValue: vkEnumRaw(self.format.rawValue))
+        cStruct.samples = VkSampleCountFlagBits(rawValue: vkEnumRaw(self.samples.rawValue))
+        cStruct.loadOp = VkAttachmentLoadOp(rawValue: vkEnumRaw(self.loadOp.rawValue))
+        cStruct.storeOp = VkAttachmentStoreOp(rawValue: vkEnumRaw(self.storeOp.rawValue))
+        cStruct.stencilLoadOp = VkAttachmentLoadOp(rawValue: vkEnumRaw(self.stencilLoadOp.rawValue))
+        cStruct.stencilStoreOp = VkAttachmentStoreOp(rawValue: vkEnumRaw(self.stencilStoreOp.rawValue))
+        cStruct.initialLayout = VkImageLayout(rawValue: vkEnumRaw(self.initialLayout.rawValue))
+        cStruct.finalLayout = VkImageLayout(rawValue: vkEnumRaw(self.finalLayout.rawValue))
         return try body(&cStruct)
     }
 }
@@ -3641,13 +3641,13 @@ public struct AttachmentReference: CStructConvertible {
 
     init(cStruct: VkAttachmentReference) {
         self.attachment = cStruct.attachment
-        self.layout = ImageLayout(rawValue: cStruct.layout.rawValue)!
+        self.layout = ImageLayout(rawValue: vkEnumValue(cStruct.layout.rawValue))!
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkAttachmentReference>) throws -> R) rethrows -> R {
         var cStruct = VkAttachmentReference()
         cStruct.attachment = self.attachment
-        cStruct.layout = VkImageLayout(rawValue: self.layout.rawValue)
+        cStruct.layout = VkImageLayout(rawValue: vkEnumRaw(self.layout.rawValue))
         return try body(&cStruct)
     }
 }
@@ -3675,7 +3675,7 @@ public struct SubpassDescription: CStructConvertible {
 
     init(cStruct: VkSubpassDescription) {
         self.flags = SubpassDescriptionFlags(rawValue: cStruct.flags)
-        self.pipelineBindPoint = PipelineBindPoint(rawValue: cStruct.pipelineBindPoint.rawValue)!
+        self.pipelineBindPoint = PipelineBindPoint(rawValue: vkEnumValue(cStruct.pipelineBindPoint.rawValue))!
         self.inputAttachments = UnsafeBufferPointer(start: cStruct.pInputAttachments, count: Int(cStruct.inputAttachmentCount)).map{ AttachmentReference(cStruct: $0) }
         self.colorAttachments = UnsafeBufferPointer(start: cStruct.pColorAttachments, count: Int(cStruct.colorAttachmentCount)).map{ AttachmentReference(cStruct: $0) }
         self.resolveAttachments = (cStruct.pResolveAttachments != nil) ? UnsafeBufferPointer(start: cStruct.pResolveAttachments, count: Int(cStruct.colorAttachmentCount)).map{ AttachmentReference(cStruct: $0) } : nil
@@ -3691,7 +3691,7 @@ public struct SubpassDescription: CStructConvertible {
                         try self.preserveAttachments.withUnsafeBufferPointer { ptr_preserveAttachments in
                             var cStruct = VkSubpassDescription()
                             cStruct.flags = self.flags.rawValue
-                            cStruct.pipelineBindPoint = VkPipelineBindPoint(rawValue: self.pipelineBindPoint.rawValue)
+                            cStruct.pipelineBindPoint = VkPipelineBindPoint(rawValue: vkEnumRaw(self.pipelineBindPoint.rawValue))
                             cStruct.inputAttachmentCount = UInt32(ptr_inputAttachments.count)
                             cStruct.pInputAttachments = ptr_inputAttachments.baseAddress
                             cStruct.colorAttachmentCount = UInt32(ptr_colorAttachments.count)
@@ -3879,7 +3879,7 @@ public struct QueryPoolCreateInfo: CStructConvertible {
 
     init(cStruct: VkQueryPoolCreateInfo) {
         self.flags = QueryPoolCreateFlags(rawValue: cStruct.flags)
-        self.queryType = QueryType(rawValue: cStruct.queryType.rawValue)!
+        self.queryType = QueryType(rawValue: vkEnumValue(cStruct.queryType.rawValue))!
         self.queryCount = cStruct.queryCount
         self.pipelineStatistics = QueryPipelineStatisticFlags(rawValue: cStruct.pipelineStatistics)
     }
@@ -3889,7 +3889,7 @@ public struct QueryPoolCreateInfo: CStructConvertible {
         cStruct.sType = VK_STRUCTURE_TYPE_QUERY_POOL_CREATE_INFO
         cStruct.pNext = nil
         cStruct.flags = self.flags.rawValue
-        cStruct.queryType = VkQueryType(rawValue: self.queryType.rawValue)
+        cStruct.queryType = VkQueryType(rawValue: vkEnumRaw(self.queryType.rawValue))
         cStruct.queryCount = self.queryCount
         cStruct.pipelineStatistics = self.pipelineStatistics.rawValue
         return try body(&cStruct)
@@ -4286,9 +4286,9 @@ public struct DisplaySurfaceCreateInfoKHR: CStructConvertible {
         self.displayMode = DisplayModeKHR(handle: cStruct.displayMode, display: display)
         self.planeIndex = cStruct.planeIndex
         self.planeStackIndex = cStruct.planeStackIndex
-        self.transform = SurfaceTransformFlagsKHR(rawValue: cStruct.transform.rawValue)
+        self.transform = SurfaceTransformFlagsKHR(rawValue: vkEnumValue(cStruct.transform.rawValue))
         self.globalAlpha = cStruct.globalAlpha
-        self.alphaMode = DisplayPlaneAlphaFlagsKHR(rawValue: cStruct.alphaMode.rawValue)
+        self.alphaMode = DisplayPlaneAlphaFlagsKHR(rawValue: vkEnumValue(cStruct.alphaMode.rawValue))
         self.imageExtent = Extent2D(cStruct: cStruct.imageExtent)
     }
 
@@ -4301,9 +4301,9 @@ public struct DisplaySurfaceCreateInfoKHR: CStructConvertible {
             cStruct.displayMode = self.displayMode.handle
             cStruct.planeIndex = self.planeIndex
             cStruct.planeStackIndex = self.planeStackIndex
-            cStruct.transform = VkSurfaceTransformFlagBitsKHR(rawValue: self.transform.rawValue)
+            cStruct.transform = VkSurfaceTransformFlagBitsKHR(rawValue: vkEnumRaw(self.transform.rawValue))
             cStruct.globalAlpha = self.globalAlpha
-            cStruct.alphaMode = VkDisplayPlaneAlphaFlagBitsKHR(rawValue: self.alphaMode.rawValue)
+            cStruct.alphaMode = VkDisplayPlaneAlphaFlagBitsKHR(rawValue: vkEnumRaw(self.alphaMode.rawValue))
             cStruct.imageExtent = ptr_imageExtent.pointee
             return try body(&cStruct)
         }
@@ -4366,7 +4366,7 @@ public struct SurfaceCapabilitiesKHR: CStructConvertible {
         self.maxImageExtent = Extent2D(cStruct: cStruct.maxImageExtent)
         self.maxImageArrayLayers = cStruct.maxImageArrayLayers
         self.supportedTransforms = SurfaceTransformFlagsKHR(rawValue: cStruct.supportedTransforms)
-        self.currentTransform = SurfaceTransformFlagsKHR(rawValue: cStruct.currentTransform.rawValue)
+        self.currentTransform = SurfaceTransformFlagsKHR(rawValue: vkEnumValue(cStruct.currentTransform.rawValue))
         self.supportedCompositeAlpha = CompositeAlphaFlagsKHR(rawValue: cStruct.supportedCompositeAlpha)
         self.supportedUsageFlags = ImageUsageFlags(rawValue: cStruct.supportedUsageFlags)
     }
@@ -4383,7 +4383,7 @@ public struct SurfaceCapabilitiesKHR: CStructConvertible {
                     cStruct.maxImageExtent = ptr_maxImageExtent.pointee
                     cStruct.maxImageArrayLayers = self.maxImageArrayLayers
                     cStruct.supportedTransforms = self.supportedTransforms.rawValue
-                    cStruct.currentTransform = VkSurfaceTransformFlagBitsKHR(rawValue: self.currentTransform.rawValue)
+                    cStruct.currentTransform = VkSurfaceTransformFlagBitsKHR(rawValue: vkEnumRaw(self.currentTransform.rawValue))
                     cStruct.supportedCompositeAlpha = self.supportedCompositeAlpha.rawValue
                     cStruct.supportedUsageFlags = self.supportedUsageFlags.rawValue
                     return try body(&cStruct)
@@ -4400,14 +4400,14 @@ public struct SurfaceFormatKHR: CStructConvertible {
     public let colorSpace: ColorSpaceKHR
 
     init(cStruct: VkSurfaceFormatKHR) {
-        self.format = Format(rawValue: cStruct.format.rawValue)!
-        self.colorSpace = ColorSpaceKHR(rawValue: cStruct.colorSpace.rawValue)!
+        self.format = Format(rawValue: vkEnumValue(cStruct.format.rawValue))!
+        self.colorSpace = ColorSpaceKHR(rawValue: vkEnumValue(cStruct.colorSpace.rawValue))!
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkSurfaceFormatKHR>) throws -> R) rethrows -> R {
         var cStruct = VkSurfaceFormatKHR()
-        cStruct.format = VkFormat(rawValue: self.format.rawValue)
-        cStruct.colorSpace = VkColorSpaceKHR(rawValue: self.colorSpace.rawValue)
+        cStruct.format = VkFormat(rawValue: vkEnumRaw(self.format.rawValue))
+        cStruct.colorSpace = VkColorSpaceKHR(rawValue: vkEnumRaw(self.colorSpace.rawValue))
         return try body(&cStruct)
     }
 }
@@ -4459,17 +4459,17 @@ public struct SwapchainCreateInfoKHR: CStructConvertible {
                 cStruct.flags = self.flags.rawValue
                 cStruct.surface = self.surface.handle
                 cStruct.minImageCount = self.minImageCount
-                cStruct.imageFormat = VkFormat(rawValue: self.imageFormat.rawValue)
-                cStruct.imageColorSpace = VkColorSpaceKHR(rawValue: self.imageColorSpace.rawValue)
+                cStruct.imageFormat = VkFormat(rawValue: vkEnumRaw(self.imageFormat.rawValue))
+                cStruct.imageColorSpace = VkColorSpaceKHR(rawValue: vkEnumRaw(self.imageColorSpace.rawValue))
                 cStruct.imageExtent = ptr_imageExtent.pointee
                 cStruct.imageArrayLayers = self.imageArrayLayers
                 cStruct.imageUsage = self.imageUsage.rawValue
-                cStruct.imageSharingMode = VkSharingMode(rawValue: self.imageSharingMode.rawValue)
+                cStruct.imageSharingMode = VkSharingMode(rawValue: vkEnumRaw(self.imageSharingMode.rawValue))
                 cStruct.queueFamilyIndexCount = UInt32(ptr_queueFamilyIndices.count)
                 cStruct.pQueueFamilyIndices = ptr_queueFamilyIndices.baseAddress
-                cStruct.preTransform = VkSurfaceTransformFlagBitsKHR(rawValue: self.preTransform.rawValue)
-                cStruct.compositeAlpha = VkCompositeAlphaFlagBitsKHR(rawValue: self.compositeAlpha.rawValue)
-                cStruct.presentMode = VkPresentModeKHR(rawValue: self.presentMode.rawValue)
+                cStruct.preTransform = VkSurfaceTransformFlagBitsKHR(rawValue: vkEnumRaw(self.preTransform.rawValue))
+                cStruct.compositeAlpha = VkCompositeAlphaFlagBitsKHR(rawValue: vkEnumRaw(self.compositeAlpha.rawValue))
+                cStruct.presentMode = VkPresentModeKHR(rawValue: vkEnumRaw(self.presentMode.rawValue))
                 cStruct.clipped = VkBool32(self.clipped ? VK_TRUE : VK_FALSE)
                 cStruct.oldSwapchain = self.oldSwapchain?.handle
                 return try body(&cStruct)
@@ -4554,11 +4554,11 @@ public struct ValidationFlagsEXT: CStructConvertible {
     }
 
     init(cStruct: VkValidationFlagsEXT) {
-        self.disabledValidationChecks = UnsafeBufferPointer(start: cStruct.pDisabledValidationChecks, count: Int(cStruct.disabledValidationCheckCount)).map{ ValidationCheckEXT(rawValue: $0.rawValue)! }
+        self.disabledValidationChecks = UnsafeBufferPointer(start: cStruct.pDisabledValidationChecks, count: Int(cStruct.disabledValidationCheckCount)).map{ ValidationCheckEXT(rawValue: vkEnumValue($0.rawValue))! }
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkValidationFlagsEXT>) throws -> R) rethrows -> R {
-        try self.disabledValidationChecks.map{ VkValidationCheckEXT(rawValue: $0.rawValue) }.withUnsafeBufferPointer { ptr_disabledValidationChecks in
+        try self.disabledValidationChecks.map{ VkValidationCheckEXT(rawValue: vkEnumRaw($0.rawValue)) }.withUnsafeBufferPointer { ptr_disabledValidationChecks in
             var cStruct = VkValidationFlagsEXT()
             cStruct.sType = VK_STRUCTURE_TYPE_VALIDATION_FLAGS_EXT
             cStruct.pNext = nil
@@ -4581,13 +4581,13 @@ public struct ValidationFeaturesEXT: CStructConvertible {
     }
 
     init(cStruct: VkValidationFeaturesEXT) {
-        self.enabledValidationFeatures = UnsafeBufferPointer(start: cStruct.pEnabledValidationFeatures, count: Int(cStruct.enabledValidationFeatureCount)).map{ ValidationFeatureEnableEXT(rawValue: $0.rawValue)! }
-        self.disabledValidationFeatures = UnsafeBufferPointer(start: cStruct.pDisabledValidationFeatures, count: Int(cStruct.disabledValidationFeatureCount)).map{ ValidationFeatureDisableEXT(rawValue: $0.rawValue)! }
+        self.enabledValidationFeatures = UnsafeBufferPointer(start: cStruct.pEnabledValidationFeatures, count: Int(cStruct.enabledValidationFeatureCount)).map{ ValidationFeatureEnableEXT(rawValue: vkEnumValue($0.rawValue))! }
+        self.disabledValidationFeatures = UnsafeBufferPointer(start: cStruct.pDisabledValidationFeatures, count: Int(cStruct.disabledValidationFeatureCount)).map{ ValidationFeatureDisableEXT(rawValue: vkEnumValue($0.rawValue))! }
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkValidationFeaturesEXT>) throws -> R) rethrows -> R {
-        try self.enabledValidationFeatures.map{ VkValidationFeatureEnableEXT(rawValue: $0.rawValue) }.withUnsafeBufferPointer { ptr_enabledValidationFeatures in
-            try self.disabledValidationFeatures.map{ VkValidationFeatureDisableEXT(rawValue: $0.rawValue) }.withUnsafeBufferPointer { ptr_disabledValidationFeatures in
+        try self.enabledValidationFeatures.map{ VkValidationFeatureEnableEXT(rawValue: vkEnumRaw($0.rawValue)) }.withUnsafeBufferPointer { ptr_enabledValidationFeatures in
+            try self.disabledValidationFeatures.map{ VkValidationFeatureDisableEXT(rawValue: vkEnumRaw($0.rawValue)) }.withUnsafeBufferPointer { ptr_disabledValidationFeatures in
                 var cStruct = VkValidationFeaturesEXT()
                 cStruct.sType = VK_STRUCTURE_TYPE_VALIDATION_FEATURES_EXT
                 cStruct.pNext = nil
@@ -4611,14 +4611,14 @@ public struct PipelineRasterizationStateRasterizationOrderAMD: CStructConvertibl
     }
 
     init(cStruct: VkPipelineRasterizationStateRasterizationOrderAMD) {
-        self.rasterizationOrder = RasterizationOrderAMD(rawValue: cStruct.rasterizationOrder.rawValue)!
+        self.rasterizationOrder = RasterizationOrderAMD(rawValue: vkEnumValue(cStruct.rasterizationOrder.rawValue))!
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkPipelineRasterizationStateRasterizationOrderAMD>) throws -> R) rethrows -> R {
         var cStruct = VkPipelineRasterizationStateRasterizationOrderAMD()
         cStruct.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_RASTERIZATION_ORDER_AMD
         cStruct.pNext = nil
-        cStruct.rasterizationOrder = VkRasterizationOrderAMD(rawValue: self.rasterizationOrder.rawValue)
+        cStruct.rasterizationOrder = VkRasterizationOrderAMD(rawValue: vkEnumRaw(self.rasterizationOrder.rawValue))
         return try body(&cStruct)
     }
 }
@@ -4637,7 +4637,7 @@ public struct DebugMarkerObjectNameInfoEXT: CStructConvertible {
     }
 
     init(cStruct: VkDebugMarkerObjectNameInfoEXT) {
-        self.objectType = DebugReportObjectTypeEXT(rawValue: cStruct.objectType.rawValue)!
+        self.objectType = DebugReportObjectTypeEXT(rawValue: vkEnumValue(cStruct.objectType.rawValue))!
         self.object = cStruct.object
         self.objectName = String(cString: cStruct.pObjectName)
     }
@@ -4647,7 +4647,7 @@ public struct DebugMarkerObjectNameInfoEXT: CStructConvertible {
             var cStruct = VkDebugMarkerObjectNameInfoEXT()
             cStruct.sType = VK_STRUCTURE_TYPE_DEBUG_MARKER_OBJECT_NAME_INFO_EXT
             cStruct.pNext = nil
-            cStruct.objectType = VkDebugReportObjectTypeEXT(rawValue: self.objectType.rawValue)
+            cStruct.objectType = VkDebugReportObjectTypeEXT(rawValue: vkEnumRaw(self.objectType.rawValue))
             cStruct.object = self.object
             cStruct.pObjectName = cString_objectName
             return try body(&cStruct)
@@ -4673,7 +4673,7 @@ public struct DebugMarkerObjectTagInfoEXT: CStructConvertible {
     }
 
     init(cStruct: VkDebugMarkerObjectTagInfoEXT) {
-        self.objectType = DebugReportObjectTypeEXT(rawValue: cStruct.objectType.rawValue)!
+        self.objectType = DebugReportObjectTypeEXT(rawValue: vkEnumValue(cStruct.objectType.rawValue))!
         self.object = cStruct.object
         self.tagName = cStruct.tagName
         self.tagSize = cStruct.tagSize
@@ -4684,7 +4684,7 @@ public struct DebugMarkerObjectTagInfoEXT: CStructConvertible {
         var cStruct = VkDebugMarkerObjectTagInfoEXT()
         cStruct.sType = VK_STRUCTURE_TYPE_DEBUG_MARKER_OBJECT_TAG_INFO_EXT
         cStruct.pNext = nil
-        cStruct.objectType = VkDebugReportObjectTypeEXT(rawValue: self.objectType.rawValue)
+        cStruct.objectType = VkDebugReportObjectTypeEXT(rawValue: vkEnumRaw(self.objectType.rawValue))
         cStruct.object = self.object
         cStruct.tagName = self.tagName
         cStruct.tagSize = self.tagSize
@@ -5018,14 +5018,14 @@ public struct BindIndexBufferIndirectCommandNV: CStructConvertible {
     init(cStruct: VkBindIndexBufferIndirectCommandNV) {
         self.bufferAddress = cStruct.bufferAddress
         self.size = cStruct.size
-        self.indexType = IndexType(rawValue: cStruct.indexType.rawValue)!
+        self.indexType = IndexType(rawValue: vkEnumValue(cStruct.indexType.rawValue))!
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkBindIndexBufferIndirectCommandNV>) throws -> R) rethrows -> R {
         var cStruct = VkBindIndexBufferIndirectCommandNV()
         cStruct.bufferAddress = self.bufferAddress
         cStruct.size = self.size
-        cStruct.indexType = VkIndexType(rawValue: self.indexType.rawValue)
+        cStruct.indexType = VkIndexType(rawValue: vkEnumRaw(self.indexType.rawValue))
         return try body(&cStruct)
     }
 }
@@ -5131,12 +5131,12 @@ public struct IndirectCommandsLayoutTokenNV: CStructConvertible {
 
 
     func withCStruct<R>(_ body: (UnsafePointer<VkIndirectCommandsLayoutTokenNV>) throws -> R) rethrows -> R {
-        try self.indexTypes.map{ VkIndexType(rawValue: $0.rawValue) }.withUnsafeBufferPointer { ptr_indexTypes in
+        try self.indexTypes.map{ VkIndexType(rawValue: vkEnumRaw($0.rawValue)) }.withUnsafeBufferPointer { ptr_indexTypes in
             try self.indexTypeValues.withUnsafeBufferPointer { ptr_indexTypeValues in
                 var cStruct = VkIndirectCommandsLayoutTokenNV()
                 cStruct.sType = VK_STRUCTURE_TYPE_INDIRECT_COMMANDS_LAYOUT_TOKEN_NV
                 cStruct.pNext = nil
-                cStruct.tokenType = VkIndirectCommandsTokenTypeNV(rawValue: self.tokenType.rawValue)
+                cStruct.tokenType = VkIndirectCommandsTokenTypeNV(rawValue: vkEnumRaw(self.tokenType.rawValue))
                 cStruct.stream = self.stream
                 cStruct.offset = self.offset
                 cStruct.vertexBindingUnit = self.vertexBindingUnit
@@ -5178,7 +5178,7 @@ public struct IndirectCommandsLayoutCreateInfoNV: CStructConvertible {
                 cStruct.sType = VK_STRUCTURE_TYPE_INDIRECT_COMMANDS_LAYOUT_CREATE_INFO_NV
                 cStruct.pNext = nil
                 cStruct.flags = self.flags.rawValue
-                cStruct.pipelineBindPoint = VkPipelineBindPoint(rawValue: self.pipelineBindPoint.rawValue)
+                cStruct.pipelineBindPoint = VkPipelineBindPoint(rawValue: vkEnumRaw(self.pipelineBindPoint.rawValue))
                 cStruct.tokenCount = UInt32(ptr_tokens.count)
                 cStruct.pTokens = ptr_tokens.baseAddress
                 cStruct.streamCount = UInt32(ptr_streamStrides.count)
@@ -5226,7 +5226,7 @@ public struct GeneratedCommandsInfoNV: CStructConvertible {
             var cStruct = VkGeneratedCommandsInfoNV()
             cStruct.sType = VK_STRUCTURE_TYPE_GENERATED_COMMANDS_INFO_NV
             cStruct.pNext = nil
-            cStruct.pipelineBindPoint = VkPipelineBindPoint(rawValue: self.pipelineBindPoint.rawValue)
+            cStruct.pipelineBindPoint = VkPipelineBindPoint(rawValue: vkEnumRaw(self.pipelineBindPoint.rawValue))
             cStruct.pipeline = self.pipeline.handle
             cStruct.indirectCommandsLayout = self.indirectCommandsLayout.handle
             cStruct.streamCount = UInt32(ptr_streams.count)
@@ -5257,7 +5257,7 @@ public struct GeneratedCommandsMemoryRequirementsInfoNV: CStructConvertible {
         var cStruct = VkGeneratedCommandsMemoryRequirementsInfoNV()
         cStruct.sType = VK_STRUCTURE_TYPE_GENERATED_COMMANDS_MEMORY_REQUIREMENTS_INFO_NV
         cStruct.pNext = nil
-        cStruct.pipelineBindPoint = VkPipelineBindPoint(rawValue: self.pipelineBindPoint.rawValue)
+        cStruct.pipelineBindPoint = VkPipelineBindPoint(rawValue: vkEnumRaw(self.pipelineBindPoint.rawValue))
         cStruct.pipeline = self.pipeline.handle
         cStruct.indirectCommandsLayout = self.indirectCommandsLayout.handle
         cStruct.maxSequencesCount = self.maxSequencesCount
@@ -5367,9 +5367,9 @@ public struct PhysicalDeviceImageFormatInfo2: CStructConvertible {
     }
 
     init(cStruct: VkPhysicalDeviceImageFormatInfo2) {
-        self.format = Format(rawValue: cStruct.format.rawValue)!
-        self.type = ImageType(rawValue: cStruct.type.rawValue)!
-        self.tiling = ImageTiling(rawValue: cStruct.tiling.rawValue)!
+        self.format = Format(rawValue: vkEnumValue(cStruct.format.rawValue))!
+        self.type = ImageType(rawValue: vkEnumValue(cStruct.type.rawValue))!
+        self.tiling = ImageTiling(rawValue: vkEnumValue(cStruct.tiling.rawValue))!
         self.usage = ImageUsageFlags(rawValue: cStruct.usage)
         self.flags = ImageCreateFlags(rawValue: cStruct.flags)
     }
@@ -5378,9 +5378,9 @@ public struct PhysicalDeviceImageFormatInfo2: CStructConvertible {
         var cStruct = VkPhysicalDeviceImageFormatInfo2()
         cStruct.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_FORMAT_INFO_2
         cStruct.pNext = nil
-        cStruct.format = VkFormat(rawValue: self.format.rawValue)
-        cStruct.type = VkImageType(rawValue: self.type.rawValue)
-        cStruct.tiling = VkImageTiling(rawValue: self.tiling.rawValue)
+        cStruct.format = VkFormat(rawValue: vkEnumRaw(self.format.rawValue))
+        cStruct.type = VkImageType(rawValue: vkEnumRaw(self.type.rawValue))
+        cStruct.tiling = VkImageTiling(rawValue: vkEnumRaw(self.tiling.rawValue))
         cStruct.usage = self.usage.rawValue
         cStruct.flags = self.flags.rawValue
         return try body(&cStruct)
@@ -5465,22 +5465,22 @@ public struct PhysicalDeviceSparseImageFormatInfo2: CStructConvertible {
     }
 
     init(cStruct: VkPhysicalDeviceSparseImageFormatInfo2) {
-        self.format = Format(rawValue: cStruct.format.rawValue)!
-        self.type = ImageType(rawValue: cStruct.type.rawValue)!
-        self.samples = SampleCountFlags(rawValue: cStruct.samples.rawValue)
+        self.format = Format(rawValue: vkEnumValue(cStruct.format.rawValue))!
+        self.type = ImageType(rawValue: vkEnumValue(cStruct.type.rawValue))!
+        self.samples = SampleCountFlags(rawValue: vkEnumValue(cStruct.samples.rawValue))
         self.usage = ImageUsageFlags(rawValue: cStruct.usage)
-        self.tiling = ImageTiling(rawValue: cStruct.tiling.rawValue)!
+        self.tiling = ImageTiling(rawValue: vkEnumValue(cStruct.tiling.rawValue))!
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkPhysicalDeviceSparseImageFormatInfo2>) throws -> R) rethrows -> R {
         var cStruct = VkPhysicalDeviceSparseImageFormatInfo2()
         cStruct.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SPARSE_IMAGE_FORMAT_INFO_2
         cStruct.pNext = nil
-        cStruct.format = VkFormat(rawValue: self.format.rawValue)
-        cStruct.type = VkImageType(rawValue: self.type.rawValue)
-        cStruct.samples = VkSampleCountFlagBits(rawValue: self.samples.rawValue)
+        cStruct.format = VkFormat(rawValue: vkEnumRaw(self.format.rawValue))
+        cStruct.type = VkImageType(rawValue: vkEnumRaw(self.type.rawValue))
+        cStruct.samples = VkSampleCountFlagBits(rawValue: vkEnumRaw(self.samples.rawValue))
         cStruct.usage = self.usage.rawValue
-        cStruct.tiling = VkImageTiling(rawValue: self.tiling.rawValue)
+        cStruct.tiling = VkImageTiling(rawValue: vkEnumRaw(self.tiling.rawValue))
         return try body(&cStruct)
     }
 }
@@ -5544,7 +5544,7 @@ public struct PhysicalDeviceDriverProperties: CStructConvertible {
     public let conformanceVersion: ConformanceVersion
 
     init(cStruct: VkPhysicalDeviceDriverProperties) {
-        self.driverID = DriverId(rawValue: cStruct.driverID.rawValue)!
+        self.driverID = DriverId(rawValue: vkEnumValue(cStruct.driverID.rawValue))!
         self.driverName = String(unsafeBytesOf: cStruct.driverName)
         self.driverInfo = String(unsafeBytesOf: cStruct.driverInfo)
         self.conformanceVersion = ConformanceVersion(cStruct: cStruct.conformanceVersion)
@@ -5555,7 +5555,7 @@ public struct PhysicalDeviceDriverProperties: CStructConvertible {
             var cStruct = VkPhysicalDeviceDriverProperties()
             cStruct.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRIVER_PROPERTIES
             cStruct.pNext = nil
-            cStruct.driverID = VkDriverId(rawValue: self.driverID.rawValue)
+            cStruct.driverID = VkDriverId(rawValue: vkEnumRaw(self.driverID.rawValue))
             cStruct.driverName = self.driverName.unsafeBytesCopy()
             cStruct.driverInfo = self.driverInfo.unsafeBytesCopy()
             cStruct.conformanceVersion = ptr_conformanceVersion.pointee
@@ -5702,14 +5702,14 @@ public struct PhysicalDeviceExternalImageFormatInfo: CStructConvertible {
     }
 
     init(cStruct: VkPhysicalDeviceExternalImageFormatInfo) {
-        self.handleType = ExternalMemoryHandleTypeFlags(rawValue: cStruct.handleType.rawValue)
+        self.handleType = ExternalMemoryHandleTypeFlags(rawValue: vkEnumValue(cStruct.handleType.rawValue))
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkPhysicalDeviceExternalImageFormatInfo>) throws -> R) rethrows -> R {
         var cStruct = VkPhysicalDeviceExternalImageFormatInfo()
         cStruct.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_IMAGE_FORMAT_INFO
         cStruct.pNext = nil
-        cStruct.handleType = VkExternalMemoryHandleTypeFlagBits(rawValue: self.handleType.rawValue)
+        cStruct.handleType = VkExternalMemoryHandleTypeFlagBits(rawValue: vkEnumRaw(self.handleType.rawValue))
         return try body(&cStruct)
     }
 }
@@ -5750,7 +5750,7 @@ public struct PhysicalDeviceExternalBufferInfo: CStructConvertible {
     init(cStruct: VkPhysicalDeviceExternalBufferInfo) {
         self.flags = BufferCreateFlags(rawValue: cStruct.flags)
         self.usage = BufferUsageFlags(rawValue: cStruct.usage)
-        self.handleType = ExternalMemoryHandleTypeFlags(rawValue: cStruct.handleType.rawValue)
+        self.handleType = ExternalMemoryHandleTypeFlags(rawValue: vkEnumValue(cStruct.handleType.rawValue))
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkPhysicalDeviceExternalBufferInfo>) throws -> R) rethrows -> R {
@@ -5759,7 +5759,7 @@ public struct PhysicalDeviceExternalBufferInfo: CStructConvertible {
         cStruct.pNext = nil
         cStruct.flags = self.flags.rawValue
         cStruct.usage = self.usage.rawValue
-        cStruct.handleType = VkExternalMemoryHandleTypeFlagBits(rawValue: self.handleType.rawValue)
+        cStruct.handleType = VkExternalMemoryHandleTypeFlagBits(rawValue: vkEnumRaw(self.handleType.rawValue))
         return try body(&cStruct)
     }
 }
@@ -5892,7 +5892,7 @@ public struct ImportMemoryFdInfoKHR: CStructConvertible {
     }
 
     init(cStruct: VkImportMemoryFdInfoKHR) {
-        self.handleType = ExternalMemoryHandleTypeFlags(rawValue: cStruct.handleType.rawValue)
+        self.handleType = ExternalMemoryHandleTypeFlags(rawValue: vkEnumValue(cStruct.handleType.rawValue))
         self.fd = cStruct.fd
     }
 
@@ -5900,7 +5900,7 @@ public struct ImportMemoryFdInfoKHR: CStructConvertible {
         var cStruct = VkImportMemoryFdInfoKHR()
         cStruct.sType = VK_STRUCTURE_TYPE_IMPORT_MEMORY_FD_INFO_KHR
         cStruct.pNext = nil
-        cStruct.handleType = VkExternalMemoryHandleTypeFlagBits(rawValue: self.handleType.rawValue)
+        cStruct.handleType = VkExternalMemoryHandleTypeFlagBits(rawValue: vkEnumRaw(self.handleType.rawValue))
         cStruct.fd = self.fd
         return try body(&cStruct)
     }
@@ -5941,7 +5941,7 @@ public struct MemoryGetFdInfoKHR: CStructConvertible {
         cStruct.sType = VK_STRUCTURE_TYPE_MEMORY_GET_FD_INFO_KHR
         cStruct.pNext = nil
         cStruct.memory = self.memory.handle
-        cStruct.handleType = VkExternalMemoryHandleTypeFlagBits(rawValue: self.handleType.rawValue)
+        cStruct.handleType = VkExternalMemoryHandleTypeFlagBits(rawValue: vkEnumRaw(self.handleType.rawValue))
         return try body(&cStruct)
     }
 }
@@ -5956,14 +5956,14 @@ public struct PhysicalDeviceExternalSemaphoreInfo: CStructConvertible {
     }
 
     init(cStruct: VkPhysicalDeviceExternalSemaphoreInfo) {
-        self.handleType = ExternalSemaphoreHandleTypeFlags(rawValue: cStruct.handleType.rawValue)
+        self.handleType = ExternalSemaphoreHandleTypeFlags(rawValue: vkEnumValue(cStruct.handleType.rawValue))
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkPhysicalDeviceExternalSemaphoreInfo>) throws -> R) rethrows -> R {
         var cStruct = VkPhysicalDeviceExternalSemaphoreInfo()
         cStruct.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_SEMAPHORE_INFO
         cStruct.pNext = nil
-        cStruct.handleType = VkExternalSemaphoreHandleTypeFlagBits(rawValue: self.handleType.rawValue)
+        cStruct.handleType = VkExternalSemaphoreHandleTypeFlagBits(rawValue: vkEnumRaw(self.handleType.rawValue))
         return try body(&cStruct)
     }
 }
@@ -6036,7 +6036,7 @@ public struct ImportSemaphoreFdInfoKHR: CStructConvertible {
         cStruct.pNext = nil
         cStruct.semaphore = self.semaphore.handle
         cStruct.flags = self.flags.rawValue
-        cStruct.handleType = VkExternalSemaphoreHandleTypeFlagBits(rawValue: self.handleType.rawValue)
+        cStruct.handleType = VkExternalSemaphoreHandleTypeFlagBits(rawValue: vkEnumRaw(self.handleType.rawValue))
         cStruct.fd = self.fd
         return try body(&cStruct)
     }
@@ -6059,7 +6059,7 @@ public struct SemaphoreGetFdInfoKHR: CStructConvertible {
         cStruct.sType = VK_STRUCTURE_TYPE_SEMAPHORE_GET_FD_INFO_KHR
         cStruct.pNext = nil
         cStruct.semaphore = self.semaphore.handle
-        cStruct.handleType = VkExternalSemaphoreHandleTypeFlagBits(rawValue: self.handleType.rawValue)
+        cStruct.handleType = VkExternalSemaphoreHandleTypeFlagBits(rawValue: vkEnumRaw(self.handleType.rawValue))
         return try body(&cStruct)
     }
 }
@@ -6074,14 +6074,14 @@ public struct PhysicalDeviceExternalFenceInfo: CStructConvertible {
     }
 
     init(cStruct: VkPhysicalDeviceExternalFenceInfo) {
-        self.handleType = ExternalFenceHandleTypeFlags(rawValue: cStruct.handleType.rawValue)
+        self.handleType = ExternalFenceHandleTypeFlags(rawValue: vkEnumValue(cStruct.handleType.rawValue))
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkPhysicalDeviceExternalFenceInfo>) throws -> R) rethrows -> R {
         var cStruct = VkPhysicalDeviceExternalFenceInfo()
         cStruct.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_FENCE_INFO
         cStruct.pNext = nil
-        cStruct.handleType = VkExternalFenceHandleTypeFlagBits(rawValue: self.handleType.rawValue)
+        cStruct.handleType = VkExternalFenceHandleTypeFlagBits(rawValue: vkEnumRaw(self.handleType.rawValue))
         return try body(&cStruct)
     }
 }
@@ -6154,7 +6154,7 @@ public struct ImportFenceFdInfoKHR: CStructConvertible {
         cStruct.pNext = nil
         cStruct.fence = self.fence.handle
         cStruct.flags = self.flags.rawValue
-        cStruct.handleType = VkExternalFenceHandleTypeFlagBits(rawValue: self.handleType.rawValue)
+        cStruct.handleType = VkExternalFenceHandleTypeFlagBits(rawValue: vkEnumRaw(self.handleType.rawValue))
         cStruct.fd = self.fd
         return try body(&cStruct)
     }
@@ -6177,7 +6177,7 @@ public struct FenceGetFdInfoKHR: CStructConvertible {
         cStruct.sType = VK_STRUCTURE_TYPE_FENCE_GET_FD_INFO_KHR
         cStruct.pNext = nil
         cStruct.fence = self.fence.handle
-        cStruct.handleType = VkExternalFenceHandleTypeFlagBits(rawValue: self.handleType.rawValue)
+        cStruct.handleType = VkExternalFenceHandleTypeFlagBits(rawValue: vkEnumRaw(self.handleType.rawValue))
         return try body(&cStruct)
     }
 }
@@ -6295,7 +6295,7 @@ public struct SurfaceCapabilities2EXT: CStructConvertible {
         self.maxImageExtent = Extent2D(cStruct: cStruct.maxImageExtent)
         self.maxImageArrayLayers = cStruct.maxImageArrayLayers
         self.supportedTransforms = SurfaceTransformFlagsKHR(rawValue: cStruct.supportedTransforms)
-        self.currentTransform = SurfaceTransformFlagsKHR(rawValue: cStruct.currentTransform.rawValue)
+        self.currentTransform = SurfaceTransformFlagsKHR(rawValue: vkEnumValue(cStruct.currentTransform.rawValue))
         self.supportedCompositeAlpha = CompositeAlphaFlagsKHR(rawValue: cStruct.supportedCompositeAlpha)
         self.supportedUsageFlags = ImageUsageFlags(rawValue: cStruct.supportedUsageFlags)
         self.supportedSurfaceCounters = SurfaceCounterFlagsEXT(rawValue: cStruct.supportedSurfaceCounters)
@@ -6315,7 +6315,7 @@ public struct SurfaceCapabilities2EXT: CStructConvertible {
                     cStruct.maxImageExtent = ptr_maxImageExtent.pointee
                     cStruct.maxImageArrayLayers = self.maxImageArrayLayers
                     cStruct.supportedTransforms = self.supportedTransforms.rawValue
-                    cStruct.currentTransform = VkSurfaceTransformFlagBitsKHR(rawValue: self.currentTransform.rawValue)
+                    cStruct.currentTransform = VkSurfaceTransformFlagBitsKHR(rawValue: vkEnumRaw(self.currentTransform.rawValue))
                     cStruct.supportedCompositeAlpha = self.supportedCompositeAlpha.rawValue
                     cStruct.supportedUsageFlags = self.supportedUsageFlags.rawValue
                     cStruct.supportedSurfaceCounters = self.supportedSurfaceCounters.rawValue
@@ -6336,14 +6336,14 @@ public struct DisplayPowerInfoEXT: CStructConvertible {
     }
 
     init(cStruct: VkDisplayPowerInfoEXT) {
-        self.powerState = DisplayPowerStateEXT(rawValue: cStruct.powerState.rawValue)!
+        self.powerState = DisplayPowerStateEXT(rawValue: vkEnumValue(cStruct.powerState.rawValue))!
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkDisplayPowerInfoEXT>) throws -> R) rethrows -> R {
         var cStruct = VkDisplayPowerInfoEXT()
         cStruct.sType = VK_STRUCTURE_TYPE_DISPLAY_POWER_INFO_EXT
         cStruct.pNext = nil
-        cStruct.powerState = VkDisplayPowerStateEXT(rawValue: self.powerState.rawValue)
+        cStruct.powerState = VkDisplayPowerStateEXT(rawValue: vkEnumRaw(self.powerState.rawValue))
         return try body(&cStruct)
     }
 }
@@ -6358,14 +6358,14 @@ public struct DeviceEventInfoEXT: CStructConvertible {
     }
 
     init(cStruct: VkDeviceEventInfoEXT) {
-        self.deviceEvent = DeviceEventTypeEXT(rawValue: cStruct.deviceEvent.rawValue)!
+        self.deviceEvent = DeviceEventTypeEXT(rawValue: vkEnumValue(cStruct.deviceEvent.rawValue))!
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkDeviceEventInfoEXT>) throws -> R) rethrows -> R {
         var cStruct = VkDeviceEventInfoEXT()
         cStruct.sType = VK_STRUCTURE_TYPE_DEVICE_EVENT_INFO_EXT
         cStruct.pNext = nil
-        cStruct.deviceEvent = VkDeviceEventTypeEXT(rawValue: self.deviceEvent.rawValue)
+        cStruct.deviceEvent = VkDeviceEventTypeEXT(rawValue: vkEnumRaw(self.deviceEvent.rawValue))
         return try body(&cStruct)
     }
 }
@@ -6380,14 +6380,14 @@ public struct DisplayEventInfoEXT: CStructConvertible {
     }
 
     init(cStruct: VkDisplayEventInfoEXT) {
-        self.displayEvent = DisplayEventTypeEXT(rawValue: cStruct.displayEvent.rawValue)!
+        self.displayEvent = DisplayEventTypeEXT(rawValue: vkEnumValue(cStruct.displayEvent.rawValue))!
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkDisplayEventInfoEXT>) throws -> R) rethrows -> R {
         var cStruct = VkDisplayEventInfoEXT()
         cStruct.sType = VK_STRUCTURE_TYPE_DISPLAY_EVENT_INFO_EXT
         cStruct.pNext = nil
-        cStruct.displayEvent = VkDisplayEventTypeEXT(rawValue: self.displayEvent.rawValue)
+        cStruct.displayEvent = VkDisplayEventTypeEXT(rawValue: vkEnumRaw(self.displayEvent.rawValue))
         return try body(&cStruct)
     }
 }
@@ -6793,7 +6793,7 @@ public struct DeviceGroupPresentInfoKHR: CStructConvertible {
 
     init(cStruct: VkDeviceGroupPresentInfoKHR) {
         self.deviceMasks = Array(UnsafeBufferPointer(start: cStruct.pDeviceMasks, count: Int(cStruct.swapchainCount)))
-        self.mode = DeviceGroupPresentModeFlagsKHR(rawValue: cStruct.mode.rawValue)
+        self.mode = DeviceGroupPresentModeFlagsKHR(rawValue: vkEnumValue(cStruct.mode.rawValue))
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkDeviceGroupPresentInfoKHR>) throws -> R) rethrows -> R {
@@ -6803,7 +6803,7 @@ public struct DeviceGroupPresentInfoKHR: CStructConvertible {
             cStruct.pNext = nil
             cStruct.swapchainCount = UInt32(ptr_deviceMasks.count)
             cStruct.pDeviceMasks = ptr_deviceMasks.baseAddress
-            cStruct.mode = VkDeviceGroupPresentModeFlagBitsKHR(rawValue: self.mode.rawValue)
+            cStruct.mode = VkDeviceGroupPresentModeFlagBitsKHR(rawValue: vkEnumRaw(self.mode.rawValue))
             return try body(&cStruct)
         }
     }
@@ -6879,7 +6879,7 @@ public struct DescriptorUpdateTemplateEntry: CStructConvertible {
         self.dstBinding = cStruct.dstBinding
         self.dstArrayElement = cStruct.dstArrayElement
         self.descriptorCount = cStruct.descriptorCount
-        self.descriptorType = DescriptorType(rawValue: cStruct.descriptorType.rawValue)!
+        self.descriptorType = DescriptorType(rawValue: vkEnumValue(cStruct.descriptorType.rawValue))!
         self.offset = cStruct.offset
         self.stride = cStruct.stride
     }
@@ -6889,7 +6889,7 @@ public struct DescriptorUpdateTemplateEntry: CStructConvertible {
         cStruct.dstBinding = self.dstBinding
         cStruct.dstArrayElement = self.dstArrayElement
         cStruct.descriptorCount = self.descriptorCount
-        cStruct.descriptorType = VkDescriptorType(rawValue: self.descriptorType.rawValue)
+        cStruct.descriptorType = VkDescriptorType(rawValue: vkEnumRaw(self.descriptorType.rawValue))
         cStruct.offset = self.offset
         cStruct.stride = self.stride
         return try body(&cStruct)
@@ -6926,9 +6926,9 @@ public struct DescriptorUpdateTemplateCreateInfo: CStructConvertible {
             cStruct.flags = self.flags.rawValue
             cStruct.descriptorUpdateEntryCount = UInt32(ptr_descriptorUpdateEntries.count)
             cStruct.pDescriptorUpdateEntries = ptr_descriptorUpdateEntries.baseAddress
-            cStruct.templateType = VkDescriptorUpdateTemplateType(rawValue: self.templateType.rawValue)
+            cStruct.templateType = VkDescriptorUpdateTemplateType(rawValue: vkEnumRaw(self.templateType.rawValue))
             cStruct.descriptorSetLayout = self.descriptorSetLayout.handle
-            cStruct.pipelineBindPoint = VkPipelineBindPoint(rawValue: self.pipelineBindPoint.rawValue)
+            cStruct.pipelineBindPoint = VkPipelineBindPoint(rawValue: vkEnumRaw(self.pipelineBindPoint.rawValue))
             cStruct.pipelineLayout = self.pipelineLayout.handle
             cStruct.set = self.set
             return try body(&cStruct)
@@ -7220,18 +7220,18 @@ public struct ViewportSwizzleNV: CStructConvertible {
     }
 
     init(cStruct: VkViewportSwizzleNV) {
-        self.x = ViewportCoordinateSwizzleNV(rawValue: cStruct.x.rawValue)!
-        self.y = ViewportCoordinateSwizzleNV(rawValue: cStruct.y.rawValue)!
-        self.z = ViewportCoordinateSwizzleNV(rawValue: cStruct.z.rawValue)!
-        self.w = ViewportCoordinateSwizzleNV(rawValue: cStruct.w.rawValue)!
+        self.x = ViewportCoordinateSwizzleNV(rawValue: vkEnumValue(cStruct.x.rawValue))!
+        self.y = ViewportCoordinateSwizzleNV(rawValue: vkEnumValue(cStruct.y.rawValue))!
+        self.z = ViewportCoordinateSwizzleNV(rawValue: vkEnumValue(cStruct.z.rawValue))!
+        self.w = ViewportCoordinateSwizzleNV(rawValue: vkEnumValue(cStruct.w.rawValue))!
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkViewportSwizzleNV>) throws -> R) rethrows -> R {
         var cStruct = VkViewportSwizzleNV()
-        cStruct.x = VkViewportCoordinateSwizzleNV(rawValue: self.x.rawValue)
-        cStruct.y = VkViewportCoordinateSwizzleNV(rawValue: self.y.rawValue)
-        cStruct.z = VkViewportCoordinateSwizzleNV(rawValue: self.z.rawValue)
-        cStruct.w = VkViewportCoordinateSwizzleNV(rawValue: self.w.rawValue)
+        cStruct.x = VkViewportCoordinateSwizzleNV(rawValue: vkEnumRaw(self.x.rawValue))
+        cStruct.y = VkViewportCoordinateSwizzleNV(rawValue: vkEnumRaw(self.y.rawValue))
+        cStruct.z = VkViewportCoordinateSwizzleNV(rawValue: vkEnumRaw(self.z.rawValue))
+        cStruct.w = VkViewportCoordinateSwizzleNV(rawValue: vkEnumRaw(self.w.rawValue))
         return try body(&cStruct)
     }
 }
@@ -7298,7 +7298,7 @@ public struct PipelineDiscardRectangleStateCreateInfoEXT: CStructConvertible {
 
     init(cStruct: VkPipelineDiscardRectangleStateCreateInfoEXT) {
         self.flags = PipelineDiscardRectangleStateCreateFlagsEXT(rawValue: cStruct.flags)
-        self.discardRectangleMode = DiscardRectangleModeEXT(rawValue: cStruct.discardRectangleMode.rawValue)!
+        self.discardRectangleMode = DiscardRectangleModeEXT(rawValue: vkEnumValue(cStruct.discardRectangleMode.rawValue))!
         self.discardRectangles = (cStruct.pDiscardRectangles != nil) ? UnsafeBufferPointer(start: cStruct.pDiscardRectangles, count: Int(cStruct.discardRectangleCount)).map{ Rect2D(cStruct: $0) } : nil
     }
 
@@ -7308,7 +7308,7 @@ public struct PipelineDiscardRectangleStateCreateInfoEXT: CStructConvertible {
             cStruct.sType = VK_STRUCTURE_TYPE_PIPELINE_DISCARD_RECTANGLE_STATE_CREATE_INFO_EXT
             cStruct.pNext = nil
             cStruct.flags = self.flags.rawValue
-            cStruct.discardRectangleMode = VkDiscardRectangleModeEXT(rawValue: self.discardRectangleMode.rawValue)
+            cStruct.discardRectangleMode = VkDiscardRectangleModeEXT(rawValue: vkEnumRaw(self.discardRectangleMode.rawValue))
             cStruct.discardRectangleCount = UInt32(ptr_discardRectangles.count)
             cStruct.pDiscardRectangles = ptr_discardRectangles.baseAddress
             return try body(&cStruct)
@@ -7756,14 +7756,14 @@ public struct PhysicalDevicePointClippingProperties: CStructConvertible {
     public let pointClippingBehavior: PointClippingBehavior
 
     init(cStruct: VkPhysicalDevicePointClippingProperties) {
-        self.pointClippingBehavior = PointClippingBehavior(rawValue: cStruct.pointClippingBehavior.rawValue)!
+        self.pointClippingBehavior = PointClippingBehavior(rawValue: vkEnumValue(cStruct.pointClippingBehavior.rawValue))!
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkPhysicalDevicePointClippingProperties>) throws -> R) rethrows -> R {
         var cStruct = VkPhysicalDevicePointClippingProperties()
         cStruct.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_POINT_CLIPPING_PROPERTIES
         cStruct.pNext = nil
-        cStruct.pointClippingBehavior = VkPointClippingBehavior(rawValue: self.pointClippingBehavior.rawValue)
+        cStruct.pointClippingBehavior = VkPointClippingBehavior(rawValue: vkEnumRaw(self.pointClippingBehavior.rawValue))
         return try body(&cStruct)
     }
 }
@@ -7843,14 +7843,14 @@ public struct PipelineTessellationDomainOriginStateCreateInfo: CStructConvertibl
     }
 
     init(cStruct: VkPipelineTessellationDomainOriginStateCreateInfo) {
-        self.domainOrigin = TessellationDomainOrigin(rawValue: cStruct.domainOrigin.rawValue)!
+        self.domainOrigin = TessellationDomainOrigin(rawValue: vkEnumValue(cStruct.domainOrigin.rawValue))!
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkPipelineTessellationDomainOriginStateCreateInfo>) throws -> R) rethrows -> R {
         var cStruct = VkPipelineTessellationDomainOriginStateCreateInfo()
         cStruct.sType = VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_DOMAIN_ORIGIN_STATE_CREATE_INFO
         cStruct.pNext = nil
-        cStruct.domainOrigin = VkTessellationDomainOrigin(rawValue: self.domainOrigin.rawValue)
+        cStruct.domainOrigin = VkTessellationDomainOrigin(rawValue: vkEnumRaw(self.domainOrigin.rawValue))
         return try body(&cStruct)
     }
 }
@@ -7898,13 +7898,13 @@ public struct SamplerYcbcrConversionCreateInfo: CStructConvertible {
     }
 
     init(cStruct: VkSamplerYcbcrConversionCreateInfo) {
-        self.format = Format(rawValue: cStruct.format.rawValue)!
-        self.ycbcrModel = SamplerYcbcrModelConversion(rawValue: cStruct.ycbcrModel.rawValue)!
-        self.ycbcrRange = SamplerYcbcrRange(rawValue: cStruct.ycbcrRange.rawValue)!
+        self.format = Format(rawValue: vkEnumValue(cStruct.format.rawValue))!
+        self.ycbcrModel = SamplerYcbcrModelConversion(rawValue: vkEnumValue(cStruct.ycbcrModel.rawValue))!
+        self.ycbcrRange = SamplerYcbcrRange(rawValue: vkEnumValue(cStruct.ycbcrRange.rawValue))!
         self.components = ComponentMapping(cStruct: cStruct.components)
-        self.xChromaOffset = ChromaLocation(rawValue: cStruct.xChromaOffset.rawValue)!
-        self.yChromaOffset = ChromaLocation(rawValue: cStruct.yChromaOffset.rawValue)!
-        self.chromaFilter = Filter(rawValue: cStruct.chromaFilter.rawValue)!
+        self.xChromaOffset = ChromaLocation(rawValue: vkEnumValue(cStruct.xChromaOffset.rawValue))!
+        self.yChromaOffset = ChromaLocation(rawValue: vkEnumValue(cStruct.yChromaOffset.rawValue))!
+        self.chromaFilter = Filter(rawValue: vkEnumValue(cStruct.chromaFilter.rawValue))!
         self.forceExplicitReconstruction = cStruct.forceExplicitReconstruction == VK_TRUE
     }
 
@@ -7913,13 +7913,13 @@ public struct SamplerYcbcrConversionCreateInfo: CStructConvertible {
             var cStruct = VkSamplerYcbcrConversionCreateInfo()
             cStruct.sType = VK_STRUCTURE_TYPE_SAMPLER_YCBCR_CONVERSION_CREATE_INFO
             cStruct.pNext = nil
-            cStruct.format = VkFormat(rawValue: self.format.rawValue)
-            cStruct.ycbcrModel = VkSamplerYcbcrModelConversion(rawValue: self.ycbcrModel.rawValue)
-            cStruct.ycbcrRange = VkSamplerYcbcrRange(rawValue: self.ycbcrRange.rawValue)
+            cStruct.format = VkFormat(rawValue: vkEnumRaw(self.format.rawValue))
+            cStruct.ycbcrModel = VkSamplerYcbcrModelConversion(rawValue: vkEnumRaw(self.ycbcrModel.rawValue))
+            cStruct.ycbcrRange = VkSamplerYcbcrRange(rawValue: vkEnumRaw(self.ycbcrRange.rawValue))
             cStruct.components = ptr_components.pointee
-            cStruct.xChromaOffset = VkChromaLocation(rawValue: self.xChromaOffset.rawValue)
-            cStruct.yChromaOffset = VkChromaLocation(rawValue: self.yChromaOffset.rawValue)
-            cStruct.chromaFilter = VkFilter(rawValue: self.chromaFilter.rawValue)
+            cStruct.xChromaOffset = VkChromaLocation(rawValue: vkEnumRaw(self.xChromaOffset.rawValue))
+            cStruct.yChromaOffset = VkChromaLocation(rawValue: vkEnumRaw(self.yChromaOffset.rawValue))
+            cStruct.chromaFilter = VkFilter(rawValue: vkEnumRaw(self.chromaFilter.rawValue))
             cStruct.forceExplicitReconstruction = VkBool32(self.forceExplicitReconstruction ? VK_TRUE : VK_FALSE)
             return try body(&cStruct)
         }
@@ -7936,14 +7936,14 @@ public struct BindImagePlaneMemoryInfo: CStructConvertible {
     }
 
     init(cStruct: VkBindImagePlaneMemoryInfo) {
-        self.planeAspect = ImageAspectFlags(rawValue: cStruct.planeAspect.rawValue)
+        self.planeAspect = ImageAspectFlags(rawValue: vkEnumValue(cStruct.planeAspect.rawValue))
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkBindImagePlaneMemoryInfo>) throws -> R) rethrows -> R {
         var cStruct = VkBindImagePlaneMemoryInfo()
         cStruct.sType = VK_STRUCTURE_TYPE_BIND_IMAGE_PLANE_MEMORY_INFO
         cStruct.pNext = nil
-        cStruct.planeAspect = VkImageAspectFlagBits(rawValue: self.planeAspect.rawValue)
+        cStruct.planeAspect = VkImageAspectFlagBits(rawValue: vkEnumRaw(self.planeAspect.rawValue))
         return try body(&cStruct)
     }
 }
@@ -7958,14 +7958,14 @@ public struct ImagePlaneMemoryRequirementsInfo: CStructConvertible {
     }
 
     init(cStruct: VkImagePlaneMemoryRequirementsInfo) {
-        self.planeAspect = ImageAspectFlags(rawValue: cStruct.planeAspect.rawValue)
+        self.planeAspect = ImageAspectFlags(rawValue: vkEnumValue(cStruct.planeAspect.rawValue))
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkImagePlaneMemoryRequirementsInfo>) throws -> R) rethrows -> R {
         var cStruct = VkImagePlaneMemoryRequirementsInfo()
         cStruct.sType = VK_STRUCTURE_TYPE_IMAGE_PLANE_MEMORY_REQUIREMENTS_INFO
         cStruct.pNext = nil
-        cStruct.planeAspect = VkImageAspectFlagBits(rawValue: self.planeAspect.rawValue)
+        cStruct.planeAspect = VkImageAspectFlagBits(rawValue: vkEnumRaw(self.planeAspect.rawValue))
         return try body(&cStruct)
     }
 }
@@ -8234,7 +8234,7 @@ public struct SampleLocationsInfoEXT: CStructConvertible {
     }
 
     init(cStruct: VkSampleLocationsInfoEXT) {
-        self.sampleLocationsPerPixel = SampleCountFlags(rawValue: cStruct.sampleLocationsPerPixel.rawValue)
+        self.sampleLocationsPerPixel = SampleCountFlags(rawValue: vkEnumValue(cStruct.sampleLocationsPerPixel.rawValue))
         self.sampleLocationGridSize = Extent2D(cStruct: cStruct.sampleLocationGridSize)
         self.sampleLocations = UnsafeBufferPointer(start: cStruct.pSampleLocations, count: Int(cStruct.sampleLocationsCount)).map{ SampleLocationEXT(cStruct: $0) }
     }
@@ -8245,7 +8245,7 @@ public struct SampleLocationsInfoEXT: CStructConvertible {
                 var cStruct = VkSampleLocationsInfoEXT()
                 cStruct.sType = VK_STRUCTURE_TYPE_SAMPLE_LOCATIONS_INFO_EXT
                 cStruct.pNext = nil
-                cStruct.sampleLocationsPerPixel = VkSampleCountFlagBits(rawValue: self.sampleLocationsPerPixel.rawValue)
+                cStruct.sampleLocationsPerPixel = VkSampleCountFlagBits(rawValue: vkEnumRaw(self.sampleLocationsPerPixel.rawValue))
                 cStruct.sampleLocationGridSize = ptr_sampleLocationGridSize.pointee
                 cStruct.sampleLocationsCount = UInt32(ptr_sampleLocations.count)
                 cStruct.pSampleLocations = ptr_sampleLocations.baseAddress
@@ -8429,14 +8429,14 @@ public struct SamplerReductionModeCreateInfo: CStructConvertible {
     }
 
     init(cStruct: VkSamplerReductionModeCreateInfo) {
-        self.reductionMode = SamplerReductionMode(rawValue: cStruct.reductionMode.rawValue)!
+        self.reductionMode = SamplerReductionMode(rawValue: vkEnumValue(cStruct.reductionMode.rawValue))!
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkSamplerReductionModeCreateInfo>) throws -> R) rethrows -> R {
         var cStruct = VkSamplerReductionModeCreateInfo()
         cStruct.sType = VK_STRUCTURE_TYPE_SAMPLER_REDUCTION_MODE_CREATE_INFO
         cStruct.pNext = nil
-        cStruct.reductionMode = VkSamplerReductionMode(rawValue: self.reductionMode.rawValue)
+        cStruct.reductionMode = VkSamplerReductionMode(rawValue: vkEnumRaw(self.reductionMode.rawValue))
         return try body(&cStruct)
     }
 }
@@ -8512,7 +8512,7 @@ public struct PipelineColorBlendAdvancedStateCreateInfoEXT: CStructConvertible {
     init(cStruct: VkPipelineColorBlendAdvancedStateCreateInfoEXT) {
         self.srcPremultiplied = cStruct.srcPremultiplied == VK_TRUE
         self.dstPremultiplied = cStruct.dstPremultiplied == VK_TRUE
-        self.blendOverlap = BlendOverlapEXT(rawValue: cStruct.blendOverlap.rawValue)!
+        self.blendOverlap = BlendOverlapEXT(rawValue: vkEnumValue(cStruct.blendOverlap.rawValue))!
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkPipelineColorBlendAdvancedStateCreateInfoEXT>) throws -> R) rethrows -> R {
@@ -8521,7 +8521,7 @@ public struct PipelineColorBlendAdvancedStateCreateInfoEXT: CStructConvertible {
         cStruct.pNext = nil
         cStruct.srcPremultiplied = VkBool32(self.srcPremultiplied ? VK_TRUE : VK_FALSE)
         cStruct.dstPremultiplied = VkBool32(self.dstPremultiplied ? VK_TRUE : VK_FALSE)
-        cStruct.blendOverlap = VkBlendOverlapEXT(rawValue: self.blendOverlap.rawValue)
+        cStruct.blendOverlap = VkBlendOverlapEXT(rawValue: vkEnumRaw(self.blendOverlap.rawValue))
         return try body(&cStruct)
     }
 }
@@ -8647,7 +8647,7 @@ public struct PipelineCoverageModulationStateCreateInfoNV: CStructConvertible {
 
     init(cStruct: VkPipelineCoverageModulationStateCreateInfoNV) {
         self.flags = PipelineCoverageModulationStateCreateFlagsNV(rawValue: cStruct.flags)
-        self.coverageModulationMode = CoverageModulationModeNV(rawValue: cStruct.coverageModulationMode.rawValue)!
+        self.coverageModulationMode = CoverageModulationModeNV(rawValue: vkEnumValue(cStruct.coverageModulationMode.rawValue))!
         self.coverageModulationTableEnable = cStruct.coverageModulationTableEnable == VK_TRUE
         self.coverageModulationTable = (cStruct.pCoverageModulationTable != nil) ? Array(UnsafeBufferPointer(start: cStruct.pCoverageModulationTable, count: Int(cStruct.coverageModulationTableCount))) : nil
     }
@@ -8658,7 +8658,7 @@ public struct PipelineCoverageModulationStateCreateInfoNV: CStructConvertible {
             cStruct.sType = VK_STRUCTURE_TYPE_PIPELINE_COVERAGE_MODULATION_STATE_CREATE_INFO_NV
             cStruct.pNext = nil
             cStruct.flags = self.flags.rawValue
-            cStruct.coverageModulationMode = VkCoverageModulationModeNV(rawValue: self.coverageModulationMode.rawValue)
+            cStruct.coverageModulationMode = VkCoverageModulationModeNV(rawValue: vkEnumRaw(self.coverageModulationMode.rawValue))
             cStruct.coverageModulationTableEnable = VkBool32(self.coverageModulationTableEnable ? VK_TRUE : VK_FALSE)
             cStruct.coverageModulationTableCount = UInt32(ptr_coverageModulationTable.count)
             cStruct.pCoverageModulationTable = ptr_coverageModulationTable.baseAddress
@@ -8677,11 +8677,11 @@ public struct ImageFormatListCreateInfo: CStructConvertible {
     }
 
     init(cStruct: VkImageFormatListCreateInfo) {
-        self.viewFormats = UnsafeBufferPointer(start: cStruct.pViewFormats, count: Int(cStruct.viewFormatCount)).map{ Format(rawValue: $0.rawValue)! }
+        self.viewFormats = UnsafeBufferPointer(start: cStruct.pViewFormats, count: Int(cStruct.viewFormatCount)).map{ Format(rawValue: vkEnumValue($0.rawValue))! }
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkImageFormatListCreateInfo>) throws -> R) rethrows -> R {
-        try self.viewFormats.map{ VkFormat(rawValue: $0.rawValue) }.withUnsafeBufferPointer { ptr_viewFormats in
+        try self.viewFormats.map{ VkFormat(rawValue: vkEnumRaw($0.rawValue)) }.withUnsafeBufferPointer { ptr_viewFormats in
             var cStruct = VkImageFormatListCreateInfo()
             cStruct.sType = VK_STRUCTURE_TYPE_IMAGE_FORMAT_LIST_CREATE_INFO
             cStruct.pNext = nil
@@ -8850,8 +8850,8 @@ public struct PhysicalDeviceFloatControlsProperties: CStructConvertible {
     public let shaderRoundingModeRTZFloat64: Bool
 
     init(cStruct: VkPhysicalDeviceFloatControlsProperties) {
-        self.denormBehaviorIndependence = ShaderFloatControlsIndependence(rawValue: cStruct.denormBehaviorIndependence.rawValue)!
-        self.roundingModeIndependence = ShaderFloatControlsIndependence(rawValue: cStruct.roundingModeIndependence.rawValue)!
+        self.denormBehaviorIndependence = ShaderFloatControlsIndependence(rawValue: vkEnumValue(cStruct.denormBehaviorIndependence.rawValue))!
+        self.roundingModeIndependence = ShaderFloatControlsIndependence(rawValue: vkEnumValue(cStruct.roundingModeIndependence.rawValue))!
         self.shaderSignedZeroInfNanPreserveFloat16 = cStruct.shaderSignedZeroInfNanPreserveFloat16 == VK_TRUE
         self.shaderSignedZeroInfNanPreserveFloat32 = cStruct.shaderSignedZeroInfNanPreserveFloat32 == VK_TRUE
         self.shaderSignedZeroInfNanPreserveFloat64 = cStruct.shaderSignedZeroInfNanPreserveFloat64 == VK_TRUE
@@ -8873,8 +8873,8 @@ public struct PhysicalDeviceFloatControlsProperties: CStructConvertible {
         var cStruct = VkPhysicalDeviceFloatControlsProperties()
         cStruct.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FLOAT_CONTROLS_PROPERTIES
         cStruct.pNext = nil
-        cStruct.denormBehaviorIndependence = VkShaderFloatControlsIndependence(rawValue: self.denormBehaviorIndependence.rawValue)
-        cStruct.roundingModeIndependence = VkShaderFloatControlsIndependence(rawValue: self.roundingModeIndependence.rawValue)
+        cStruct.denormBehaviorIndependence = VkShaderFloatControlsIndependence(rawValue: vkEnumRaw(self.denormBehaviorIndependence.rawValue))
+        cStruct.roundingModeIndependence = VkShaderFloatControlsIndependence(rawValue: vkEnumRaw(self.roundingModeIndependence.rawValue))
         cStruct.shaderSignedZeroInfNanPreserveFloat16 = VkBool32(self.shaderSignedZeroInfNanPreserveFloat16 ? VK_TRUE : VK_FALSE)
         cStruct.shaderSignedZeroInfNanPreserveFloat32 = VkBool32(self.shaderSignedZeroInfNanPreserveFloat32 ? VK_TRUE : VK_FALSE)
         cStruct.shaderSignedZeroInfNanPreserveFloat64 = VkBool32(self.shaderSignedZeroInfNanPreserveFloat64 ? VK_TRUE : VK_FALSE)
@@ -8990,14 +8990,14 @@ public struct DeviceQueueGlobalPriorityCreateInfoEXT: CStructConvertible {
     }
 
     init(cStruct: VkDeviceQueueGlobalPriorityCreateInfoEXT) {
-        self.globalPriority = QueueGlobalPriorityEXT(rawValue: cStruct.globalPriority.rawValue)!
+        self.globalPriority = QueueGlobalPriorityEXT(rawValue: vkEnumValue(cStruct.globalPriority.rawValue))!
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkDeviceQueueGlobalPriorityCreateInfoEXT>) throws -> R) rethrows -> R {
         var cStruct = VkDeviceQueueGlobalPriorityCreateInfoEXT()
         cStruct.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_EXT
         cStruct.pNext = nil
-        cStruct.globalPriority = VkQueueGlobalPriorityEXT(rawValue: self.globalPriority.rawValue)
+        cStruct.globalPriority = VkQueueGlobalPriorityEXT(rawValue: vkEnumRaw(self.globalPriority.rawValue))
         return try body(&cStruct)
     }
 }
@@ -9016,7 +9016,7 @@ public struct DebugUtilsObjectNameInfoEXT: CStructConvertible {
     }
 
     init(cStruct: VkDebugUtilsObjectNameInfoEXT) {
-        self.objectType = ObjectType(rawValue: cStruct.objectType.rawValue)!
+        self.objectType = ObjectType(rawValue: vkEnumValue(cStruct.objectType.rawValue))!
         self.objectHandle = cStruct.objectHandle
         self.objectName = String(cString: cStruct.pObjectName)
     }
@@ -9026,7 +9026,7 @@ public struct DebugUtilsObjectNameInfoEXT: CStructConvertible {
             var cStruct = VkDebugUtilsObjectNameInfoEXT()
             cStruct.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT
             cStruct.pNext = nil
-            cStruct.objectType = VkObjectType(rawValue: self.objectType.rawValue)
+            cStruct.objectType = VkObjectType(rawValue: vkEnumRaw(self.objectType.rawValue))
             cStruct.objectHandle = self.objectHandle
             cStruct.pObjectName = cString_objectName
             return try body(&cStruct)
@@ -9052,7 +9052,7 @@ public struct DebugUtilsObjectTagInfoEXT: CStructConvertible {
     }
 
     init(cStruct: VkDebugUtilsObjectTagInfoEXT) {
-        self.objectType = ObjectType(rawValue: cStruct.objectType.rawValue)!
+        self.objectType = ObjectType(rawValue: vkEnumValue(cStruct.objectType.rawValue))!
         self.objectHandle = cStruct.objectHandle
         self.tagName = cStruct.tagName
         self.tagSize = cStruct.tagSize
@@ -9063,7 +9063,7 @@ public struct DebugUtilsObjectTagInfoEXT: CStructConvertible {
         var cStruct = VkDebugUtilsObjectTagInfoEXT()
         cStruct.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_TAG_INFO_EXT
         cStruct.pNext = nil
-        cStruct.objectType = VkObjectType(rawValue: self.objectType.rawValue)
+        cStruct.objectType = VkObjectType(rawValue: vkEnumRaw(self.objectType.rawValue))
         cStruct.objectHandle = self.objectHandle
         cStruct.tagName = self.tagName
         cStruct.tagSize = self.tagSize
@@ -9209,7 +9209,7 @@ public struct ImportMemoryHostPointerInfoEXT: CStructConvertible {
     }
 
     init(cStruct: VkImportMemoryHostPointerInfoEXT) {
-        self.handleType = ExternalMemoryHandleTypeFlags(rawValue: cStruct.handleType.rawValue)
+        self.handleType = ExternalMemoryHandleTypeFlags(rawValue: vkEnumValue(cStruct.handleType.rawValue))
         self.hostPointer = cStruct.pHostPointer
     }
 
@@ -9217,7 +9217,7 @@ public struct ImportMemoryHostPointerInfoEXT: CStructConvertible {
         var cStruct = VkImportMemoryHostPointerInfoEXT()
         cStruct.sType = VK_STRUCTURE_TYPE_IMPORT_MEMORY_HOST_POINTER_INFO_EXT
         cStruct.pNext = nil
-        cStruct.handleType = VkExternalMemoryHandleTypeFlagBits(rawValue: self.handleType.rawValue)
+        cStruct.handleType = VkExternalMemoryHandleTypeFlagBits(rawValue: vkEnumRaw(self.handleType.rawValue))
         cStruct.pHostPointer = self.hostPointer
         return try body(&cStruct)
     }
@@ -9311,14 +9311,14 @@ public struct CalibratedTimestampInfoEXT: CStructConvertible {
     }
 
     init(cStruct: VkCalibratedTimestampInfoEXT) {
-        self.timeDomain = TimeDomainEXT(rawValue: cStruct.timeDomain.rawValue)!
+        self.timeDomain = TimeDomainEXT(rawValue: vkEnumValue(cStruct.timeDomain.rawValue))!
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkCalibratedTimestampInfoEXT>) throws -> R) rethrows -> R {
         var cStruct = VkCalibratedTimestampInfoEXT()
         cStruct.sType = VK_STRUCTURE_TYPE_CALIBRATED_TIMESTAMP_INFO_EXT
         cStruct.pNext = nil
-        cStruct.timeDomain = VkTimeDomainEXT(rawValue: self.timeDomain.rawValue)
+        cStruct.timeDomain = VkTimeDomainEXT(rawValue: vkEnumRaw(self.timeDomain.rawValue))
         return try body(&cStruct)
     }
 }
@@ -9416,7 +9416,7 @@ public struct PipelineRasterizationConservativeStateCreateInfoEXT: CStructConver
 
     init(cStruct: VkPipelineRasterizationConservativeStateCreateInfoEXT) {
         self.flags = PipelineRasterizationConservativeStateCreateFlagsEXT(rawValue: cStruct.flags)
-        self.conservativeRasterizationMode = ConservativeRasterizationModeEXT(rawValue: cStruct.conservativeRasterizationMode.rawValue)!
+        self.conservativeRasterizationMode = ConservativeRasterizationModeEXT(rawValue: vkEnumValue(cStruct.conservativeRasterizationMode.rawValue))!
         self.extraPrimitiveOverestimationSize = cStruct.extraPrimitiveOverestimationSize
     }
 
@@ -9425,7 +9425,7 @@ public struct PipelineRasterizationConservativeStateCreateInfoEXT: CStructConver
         cStruct.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_CONSERVATIVE_STATE_CREATE_INFO_EXT
         cStruct.pNext = nil
         cStruct.flags = self.flags.rawValue
-        cStruct.conservativeRasterizationMode = VkConservativeRasterizationModeEXT(rawValue: self.conservativeRasterizationMode.rawValue)
+        cStruct.conservativeRasterizationMode = VkConservativeRasterizationModeEXT(rawValue: vkEnumRaw(self.conservativeRasterizationMode.rawValue))
         cStruct.extraPrimitiveOverestimationSize = self.extraPrimitiveOverestimationSize
         return try body(&cStruct)
     }
@@ -9708,14 +9708,14 @@ public struct AttachmentDescription2: CStructConvertible {
 
     init(cStruct: VkAttachmentDescription2) {
         self.flags = AttachmentDescriptionFlags(rawValue: cStruct.flags)
-        self.format = Format(rawValue: cStruct.format.rawValue)!
-        self.samples = SampleCountFlags(rawValue: cStruct.samples.rawValue)
-        self.loadOp = AttachmentLoadOp(rawValue: cStruct.loadOp.rawValue)!
-        self.storeOp = AttachmentStoreOp(rawValue: cStruct.storeOp.rawValue)!
-        self.stencilLoadOp = AttachmentLoadOp(rawValue: cStruct.stencilLoadOp.rawValue)!
-        self.stencilStoreOp = AttachmentStoreOp(rawValue: cStruct.stencilStoreOp.rawValue)!
-        self.initialLayout = ImageLayout(rawValue: cStruct.initialLayout.rawValue)!
-        self.finalLayout = ImageLayout(rawValue: cStruct.finalLayout.rawValue)!
+        self.format = Format(rawValue: vkEnumValue(cStruct.format.rawValue))!
+        self.samples = SampleCountFlags(rawValue: vkEnumValue(cStruct.samples.rawValue))
+        self.loadOp = AttachmentLoadOp(rawValue: vkEnumValue(cStruct.loadOp.rawValue))!
+        self.storeOp = AttachmentStoreOp(rawValue: vkEnumValue(cStruct.storeOp.rawValue))!
+        self.stencilLoadOp = AttachmentLoadOp(rawValue: vkEnumValue(cStruct.stencilLoadOp.rawValue))!
+        self.stencilStoreOp = AttachmentStoreOp(rawValue: vkEnumValue(cStruct.stencilStoreOp.rawValue))!
+        self.initialLayout = ImageLayout(rawValue: vkEnumValue(cStruct.initialLayout.rawValue))!
+        self.finalLayout = ImageLayout(rawValue: vkEnumValue(cStruct.finalLayout.rawValue))!
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkAttachmentDescription2>) throws -> R) rethrows -> R {
@@ -9723,14 +9723,14 @@ public struct AttachmentDescription2: CStructConvertible {
         cStruct.sType = VK_STRUCTURE_TYPE_ATTACHMENT_DESCRIPTION_2
         cStruct.pNext = nil
         cStruct.flags = self.flags.rawValue
-        cStruct.format = VkFormat(rawValue: self.format.rawValue)
-        cStruct.samples = VkSampleCountFlagBits(rawValue: self.samples.rawValue)
-        cStruct.loadOp = VkAttachmentLoadOp(rawValue: self.loadOp.rawValue)
-        cStruct.storeOp = VkAttachmentStoreOp(rawValue: self.storeOp.rawValue)
-        cStruct.stencilLoadOp = VkAttachmentLoadOp(rawValue: self.stencilLoadOp.rawValue)
-        cStruct.stencilStoreOp = VkAttachmentStoreOp(rawValue: self.stencilStoreOp.rawValue)
-        cStruct.initialLayout = VkImageLayout(rawValue: self.initialLayout.rawValue)
-        cStruct.finalLayout = VkImageLayout(rawValue: self.finalLayout.rawValue)
+        cStruct.format = VkFormat(rawValue: vkEnumRaw(self.format.rawValue))
+        cStruct.samples = VkSampleCountFlagBits(rawValue: vkEnumRaw(self.samples.rawValue))
+        cStruct.loadOp = VkAttachmentLoadOp(rawValue: vkEnumRaw(self.loadOp.rawValue))
+        cStruct.storeOp = VkAttachmentStoreOp(rawValue: vkEnumRaw(self.storeOp.rawValue))
+        cStruct.stencilLoadOp = VkAttachmentLoadOp(rawValue: vkEnumRaw(self.stencilLoadOp.rawValue))
+        cStruct.stencilStoreOp = VkAttachmentStoreOp(rawValue: vkEnumRaw(self.stencilStoreOp.rawValue))
+        cStruct.initialLayout = VkImageLayout(rawValue: vkEnumRaw(self.initialLayout.rawValue))
+        cStruct.finalLayout = VkImageLayout(rawValue: vkEnumRaw(self.finalLayout.rawValue))
         return try body(&cStruct)
     }
 }
@@ -9750,7 +9750,7 @@ public struct AttachmentReference2: CStructConvertible {
 
     init(cStruct: VkAttachmentReference2) {
         self.attachment = cStruct.attachment
-        self.layout = ImageLayout(rawValue: cStruct.layout.rawValue)!
+        self.layout = ImageLayout(rawValue: vkEnumValue(cStruct.layout.rawValue))!
         self.aspectMask = ImageAspectFlags(rawValue: cStruct.aspectMask)
     }
 
@@ -9759,7 +9759,7 @@ public struct AttachmentReference2: CStructConvertible {
         cStruct.sType = VK_STRUCTURE_TYPE_ATTACHMENT_REFERENCE_2
         cStruct.pNext = nil
         cStruct.attachment = self.attachment
-        cStruct.layout = VkImageLayout(rawValue: self.layout.rawValue)
+        cStruct.layout = VkImageLayout(rawValue: vkEnumRaw(self.layout.rawValue))
         cStruct.aspectMask = self.aspectMask.rawValue
         return try body(&cStruct)
     }
@@ -9790,7 +9790,7 @@ public struct SubpassDescription2: CStructConvertible {
 
     init(cStruct: VkSubpassDescription2) {
         self.flags = SubpassDescriptionFlags(rawValue: cStruct.flags)
-        self.pipelineBindPoint = PipelineBindPoint(rawValue: cStruct.pipelineBindPoint.rawValue)!
+        self.pipelineBindPoint = PipelineBindPoint(rawValue: vkEnumValue(cStruct.pipelineBindPoint.rawValue))!
         self.viewMask = cStruct.viewMask
         self.inputAttachments = UnsafeBufferPointer(start: cStruct.pInputAttachments, count: Int(cStruct.inputAttachmentCount)).map{ AttachmentReference2(cStruct: $0) }
         self.colorAttachments = UnsafeBufferPointer(start: cStruct.pColorAttachments, count: Int(cStruct.colorAttachmentCount)).map{ AttachmentReference2(cStruct: $0) }
@@ -9809,7 +9809,7 @@ public struct SubpassDescription2: CStructConvertible {
                             cStruct.sType = VK_STRUCTURE_TYPE_SUBPASS_DESCRIPTION_2
                             cStruct.pNext = nil
                             cStruct.flags = self.flags.rawValue
-                            cStruct.pipelineBindPoint = VkPipelineBindPoint(rawValue: self.pipelineBindPoint.rawValue)
+                            cStruct.pipelineBindPoint = VkPipelineBindPoint(rawValue: vkEnumRaw(self.pipelineBindPoint.rawValue))
                             cStruct.viewMask = self.viewMask
                             cStruct.inputAttachmentCount = UInt32(ptr_inputAttachments.count)
                             cStruct.pInputAttachments = ptr_inputAttachments.baseAddress
@@ -9938,14 +9938,14 @@ public struct SubpassBeginInfo: CStructConvertible {
     }
 
     init(cStruct: VkSubpassBeginInfo) {
-        self.contents = SubpassContents(rawValue: cStruct.contents.rawValue)!
+        self.contents = SubpassContents(rawValue: vkEnumValue(cStruct.contents.rawValue))!
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkSubpassBeginInfo>) throws -> R) rethrows -> R {
         var cStruct = VkSubpassBeginInfo()
         cStruct.sType = VK_STRUCTURE_TYPE_SUBPASS_BEGIN_INFO
         cStruct.pNext = nil
-        cStruct.contents = VkSubpassContents(rawValue: self.contents.rawValue)
+        cStruct.contents = VkSubpassContents(rawValue: vkEnumRaw(self.contents.rawValue))
         return try body(&cStruct)
     }
 }
@@ -10020,7 +10020,7 @@ public struct SemaphoreTypeCreateInfo: CStructConvertible {
     }
 
     init(cStruct: VkSemaphoreTypeCreateInfo) {
-        self.semaphoreType = SemaphoreType(rawValue: cStruct.semaphoreType.rawValue)!
+        self.semaphoreType = SemaphoreType(rawValue: vkEnumValue(cStruct.semaphoreType.rawValue))!
         self.initialValue = cStruct.initialValue
     }
 
@@ -10028,7 +10028,7 @@ public struct SemaphoreTypeCreateInfo: CStructConvertible {
         var cStruct = VkSemaphoreTypeCreateInfo()
         cStruct.sType = VK_STRUCTURE_TYPE_SEMAPHORE_TYPE_CREATE_INFO
         cStruct.pNext = nil
-        cStruct.semaphoreType = VkSemaphoreType(rawValue: self.semaphoreType.rawValue)
+        cStruct.semaphoreType = VkSemaphoreType(rawValue: vkEnumRaw(self.semaphoreType.rawValue))
         cStruct.initialValue = self.initialValue
         return try body(&cStruct)
     }
@@ -10397,7 +10397,7 @@ public struct CheckpointDataNV: CStructConvertible {
     public let checkpointMarker: UnsafeMutableRawPointer
 
     init(cStruct: VkCheckpointDataNV) {
-        self.stage = PipelineStageFlags(rawValue: cStruct.stage.rawValue)
+        self.stage = PipelineStageFlags(rawValue: vkEnumValue(cStruct.stage.rawValue))
         self.checkpointMarker = cStruct.pCheckpointMarker
     }
 
@@ -10405,7 +10405,7 @@ public struct CheckpointDataNV: CStructConvertible {
         var cStruct = VkCheckpointDataNV()
         cStruct.sType = VK_STRUCTURE_TYPE_CHECKPOINT_DATA_NV
         cStruct.pNext = nil
-        cStruct.stage = VkPipelineStageFlagBits(rawValue: self.stage.rawValue)
+        cStruct.stage = VkPipelineStageFlagBits(rawValue: vkEnumRaw(self.stage.rawValue))
         cStruct.pCheckpointMarker = self.checkpointMarker
         return try body(&cStruct)
     }
@@ -10452,8 +10452,8 @@ public struct SubpassDescriptionDepthStencilResolve: CStructConvertible {
     }
 
     init(cStruct: VkSubpassDescriptionDepthStencilResolve) {
-        self.depthResolveMode = ResolveModeFlags(rawValue: cStruct.depthResolveMode.rawValue)
-        self.stencilResolveMode = ResolveModeFlags(rawValue: cStruct.stencilResolveMode.rawValue)
+        self.depthResolveMode = ResolveModeFlags(rawValue: vkEnumValue(cStruct.depthResolveMode.rawValue))
+        self.stencilResolveMode = ResolveModeFlags(rawValue: vkEnumValue(cStruct.stencilResolveMode.rawValue))
         self.depthStencilResolveAttachment = (cStruct.pDepthStencilResolveAttachment != nil) ? AttachmentReference2(cStruct: cStruct.pDepthStencilResolveAttachment.pointee) : nil
     }
 
@@ -10462,8 +10462,8 @@ public struct SubpassDescriptionDepthStencilResolve: CStructConvertible {
             var cStruct = VkSubpassDescriptionDepthStencilResolve()
             cStruct.sType = VK_STRUCTURE_TYPE_SUBPASS_DESCRIPTION_DEPTH_STENCIL_RESOLVE
             cStruct.pNext = nil
-            cStruct.depthResolveMode = VkResolveModeFlagBits(rawValue: self.depthResolveMode.rawValue)
-            cStruct.stencilResolveMode = VkResolveModeFlagBits(rawValue: self.stencilResolveMode.rawValue)
+            cStruct.depthResolveMode = VkResolveModeFlagBits(rawValue: vkEnumRaw(self.depthResolveMode.rawValue))
+            cStruct.stencilResolveMode = VkResolveModeFlagBits(rawValue: vkEnumRaw(self.stencilResolveMode.rawValue))
             cStruct.pDepthStencilResolveAttachment = ptr_depthStencilResolveAttachment
             return try body(&cStruct)
         }
@@ -10480,14 +10480,14 @@ public struct ImageViewASTCDecodeModeEXT: CStructConvertible {
     }
 
     init(cStruct: VkImageViewASTCDecodeModeEXT) {
-        self.decodeMode = Format(rawValue: cStruct.decodeMode.rawValue)!
+        self.decodeMode = Format(rawValue: vkEnumValue(cStruct.decodeMode.rawValue))!
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkImageViewASTCDecodeModeEXT>) throws -> R) rethrows -> R {
         var cStruct = VkImageViewASTCDecodeModeEXT()
         cStruct.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_ASTC_DECODE_MODE_EXT
         cStruct.pNext = nil
-        cStruct.decodeMode = VkFormat(rawValue: self.decodeMode.rawValue)
+        cStruct.decodeMode = VkFormat(rawValue: vkEnumRaw(self.decodeMode.rawValue))
         return try body(&cStruct)
     }
 }
@@ -10826,11 +10826,11 @@ public struct ShadingRatePaletteNV: CStructConvertible {
     }
 
     init(cStruct: VkShadingRatePaletteNV) {
-        self.shadingRatePaletteEntries = UnsafeBufferPointer(start: cStruct.pShadingRatePaletteEntries, count: Int(cStruct.shadingRatePaletteEntryCount)).map{ ShadingRatePaletteEntryNV(rawValue: $0.rawValue)! }
+        self.shadingRatePaletteEntries = UnsafeBufferPointer(start: cStruct.pShadingRatePaletteEntries, count: Int(cStruct.shadingRatePaletteEntryCount)).map{ ShadingRatePaletteEntryNV(rawValue: vkEnumValue($0.rawValue))! }
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkShadingRatePaletteNV>) throws -> R) rethrows -> R {
-        try self.shadingRatePaletteEntries.map{ VkShadingRatePaletteEntryNV(rawValue: $0.rawValue) }.withUnsafeBufferPointer { ptr_shadingRatePaletteEntries in
+        try self.shadingRatePaletteEntries.map{ VkShadingRatePaletteEntryNV(rawValue: vkEnumRaw($0.rawValue)) }.withUnsafeBufferPointer { ptr_shadingRatePaletteEntries in
             var cStruct = VkShadingRatePaletteNV()
             cStruct.shadingRatePaletteEntryCount = UInt32(ptr_shadingRatePaletteEntries.count)
             cStruct.pShadingRatePaletteEntries = ptr_shadingRatePaletteEntries.baseAddress
@@ -10962,7 +10962,7 @@ public struct CoarseSampleOrderCustomNV: CStructConvertible {
     }
 
     init(cStruct: VkCoarseSampleOrderCustomNV) {
-        self.shadingRate = ShadingRatePaletteEntryNV(rawValue: cStruct.shadingRate.rawValue)!
+        self.shadingRate = ShadingRatePaletteEntryNV(rawValue: vkEnumValue(cStruct.shadingRate.rawValue))!
         self.sampleCount = cStruct.sampleCount
         self.sampleLocations = UnsafeBufferPointer(start: cStruct.pSampleLocations, count: Int(cStruct.sampleLocationCount)).map{ CoarseSampleLocationNV(cStruct: $0) }
     }
@@ -10970,7 +10970,7 @@ public struct CoarseSampleOrderCustomNV: CStructConvertible {
     func withCStruct<R>(_ body: (UnsafePointer<VkCoarseSampleOrderCustomNV>) throws -> R) rethrows -> R {
         try self.sampleLocations.withCStructBufferPointer { ptr_sampleLocations in
             var cStruct = VkCoarseSampleOrderCustomNV()
-            cStruct.shadingRate = VkShadingRatePaletteEntryNV(rawValue: self.shadingRate.rawValue)
+            cStruct.shadingRate = VkShadingRatePaletteEntryNV(rawValue: vkEnumRaw(self.shadingRate.rawValue))
             cStruct.sampleCount = self.sampleCount
             cStruct.sampleLocationCount = UInt32(ptr_sampleLocations.count)
             cStruct.pSampleLocations = ptr_sampleLocations.baseAddress
@@ -10991,7 +10991,7 @@ public struct PipelineViewportCoarseSampleOrderStateCreateInfoNV: CStructConvert
     }
 
     init(cStruct: VkPipelineViewportCoarseSampleOrderStateCreateInfoNV) {
-        self.sampleOrderType = CoarseSampleOrderTypeNV(rawValue: cStruct.sampleOrderType.rawValue)!
+        self.sampleOrderType = CoarseSampleOrderTypeNV(rawValue: vkEnumValue(cStruct.sampleOrderType.rawValue))!
         self.customSampleOrders = UnsafeBufferPointer(start: cStruct.pCustomSampleOrders, count: Int(cStruct.customSampleOrderCount)).map{ CoarseSampleOrderCustomNV(cStruct: $0) }
     }
 
@@ -11000,7 +11000,7 @@ public struct PipelineViewportCoarseSampleOrderStateCreateInfoNV: CStructConvert
             var cStruct = VkPipelineViewportCoarseSampleOrderStateCreateInfoNV()
             cStruct.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_COARSE_SAMPLE_ORDER_STATE_CREATE_INFO_NV
             cStruct.pNext = nil
-            cStruct.sampleOrderType = VkCoarseSampleOrderTypeNV(rawValue: self.sampleOrderType.rawValue)
+            cStruct.sampleOrderType = VkCoarseSampleOrderTypeNV(rawValue: vkEnumRaw(self.sampleOrderType.rawValue))
             cStruct.customSampleOrderCount = UInt32(ptr_customSampleOrders.count)
             cStruct.pCustomSampleOrders = ptr_customSampleOrders.baseAddress
             return try body(&cStruct)
@@ -11231,11 +11231,11 @@ public struct GeometryTrianglesNV: CStructConvertible {
         cStruct.vertexOffset = self.vertexOffset
         cStruct.vertexCount = self.vertexCount
         cStruct.vertexStride = self.vertexStride
-        cStruct.vertexFormat = VkFormat(rawValue: self.vertexFormat.rawValue)
+        cStruct.vertexFormat = VkFormat(rawValue: vkEnumRaw(self.vertexFormat.rawValue))
         cStruct.indexData = self.indexData?.handle
         cStruct.indexOffset = self.indexOffset
         cStruct.indexCount = self.indexCount
-        cStruct.indexType = VkIndexType(rawValue: self.indexType.rawValue)
+        cStruct.indexType = VkIndexType(rawValue: vkEnumRaw(self.indexType.rawValue))
         cStruct.transformData = self.transformData?.handle
         cStruct.transformOffset = self.transformOffset
         return try body(&cStruct)
@@ -11495,7 +11495,7 @@ public struct PhysicalDeviceImageDrmFormatModifierInfoEXT: CStructConvertible {
 
     init(cStruct: VkPhysicalDeviceImageDrmFormatModifierInfoEXT) {
         self.drmFormatModifier = cStruct.drmFormatModifier
-        self.sharingMode = SharingMode(rawValue: cStruct.sharingMode.rawValue)!
+        self.sharingMode = SharingMode(rawValue: vkEnumValue(cStruct.sharingMode.rawValue))!
         self.queueFamilyIndices = Array(UnsafeBufferPointer(start: cStruct.pQueueFamilyIndices, count: Int(cStruct.queueFamilyIndexCount)))
     }
 
@@ -11505,7 +11505,7 @@ public struct PhysicalDeviceImageDrmFormatModifierInfoEXT: CStructConvertible {
             cStruct.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_DRM_FORMAT_MODIFIER_INFO_EXT
             cStruct.pNext = nil
             cStruct.drmFormatModifier = self.drmFormatModifier
-            cStruct.sharingMode = VkSharingMode(rawValue: self.sharingMode.rawValue)
+            cStruct.sharingMode = VkSharingMode(rawValue: vkEnumRaw(self.sharingMode.rawValue))
             cStruct.queueFamilyIndexCount = UInt32(ptr_queueFamilyIndices.count)
             cStruct.pQueueFamilyIndices = ptr_queueFamilyIndices.baseAddress
             return try body(&cStruct)
@@ -11617,14 +11617,14 @@ public struct DeviceMemoryOverallocationCreateInfoAMD: CStructConvertible {
     }
 
     init(cStruct: VkDeviceMemoryOverallocationCreateInfoAMD) {
-        self.overallocationBehavior = MemoryOverallocationBehaviorAMD(rawValue: cStruct.overallocationBehavior.rawValue)!
+        self.overallocationBehavior = MemoryOverallocationBehaviorAMD(rawValue: vkEnumValue(cStruct.overallocationBehavior.rawValue))!
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkDeviceMemoryOverallocationCreateInfoAMD>) throws -> R) rethrows -> R {
         var cStruct = VkDeviceMemoryOverallocationCreateInfoAMD()
         cStruct.sType = VK_STRUCTURE_TYPE_DEVICE_MEMORY_OVERALLOCATION_CREATE_INFO_AMD
         cStruct.pNext = nil
-        cStruct.overallocationBehavior = VkMemoryOverallocationBehaviorAMD(rawValue: self.overallocationBehavior.rawValue)
+        cStruct.overallocationBehavior = VkMemoryOverallocationBehaviorAMD(rawValue: vkEnumRaw(self.overallocationBehavior.rawValue))
         return try body(&cStruct)
     }
 }
@@ -12017,14 +12017,14 @@ public struct PhysicalDeviceImageViewImageFormatInfoEXT: CStructConvertible {
     }
 
     init(cStruct: VkPhysicalDeviceImageViewImageFormatInfoEXT) {
-        self.imageViewType = ImageViewType(rawValue: cStruct.imageViewType.rawValue)!
+        self.imageViewType = ImageViewType(rawValue: vkEnumValue(cStruct.imageViewType.rawValue))!
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkPhysicalDeviceImageViewImageFormatInfoEXT>) throws -> R) rethrows -> R {
         var cStruct = VkPhysicalDeviceImageViewImageFormatInfoEXT()
         cStruct.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_VIEW_IMAGE_FORMAT_INFO_EXT
         cStruct.pNext = nil
-        cStruct.imageViewType = VkImageViewType(rawValue: self.imageViewType.rawValue)
+        cStruct.imageViewType = VkImageViewType(rawValue: vkEnumRaw(self.imageViewType.rawValue))
         return try body(&cStruct)
     }
 }
@@ -12097,11 +12097,11 @@ public struct FramebufferAttachmentImageInfo: CStructConvertible {
         self.width = cStruct.width
         self.height = cStruct.height
         self.layerCount = cStruct.layerCount
-        self.viewFormats = UnsafeBufferPointer(start: cStruct.pViewFormats, count: Int(cStruct.viewFormatCount)).map{ Format(rawValue: $0.rawValue)! }
+        self.viewFormats = UnsafeBufferPointer(start: cStruct.pViewFormats, count: Int(cStruct.viewFormatCount)).map{ Format(rawValue: vkEnumValue($0.rawValue))! }
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkFramebufferAttachmentImageInfo>) throws -> R) rethrows -> R {
-        try self.viewFormats.map{ VkFormat(rawValue: $0.rawValue) }.withUnsafeBufferPointer { ptr_viewFormats in
+        try self.viewFormats.map{ VkFormat(rawValue: vkEnumRaw($0.rawValue)) }.withUnsafeBufferPointer { ptr_viewFormats in
             var cStruct = VkFramebufferAttachmentImageInfo()
             cStruct.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_ATTACHMENT_IMAGE_INFO
             cStruct.pNext = nil
@@ -12257,11 +12257,11 @@ public struct CooperativeMatrixPropertiesNV: CStructConvertible {
         self.MSize = cStruct.MSize
         self.NSize = cStruct.NSize
         self.KSize = cStruct.KSize
-        self.AType = ComponentTypeNV(rawValue: cStruct.AType.rawValue)!
-        self.BType = ComponentTypeNV(rawValue: cStruct.BType.rawValue)!
-        self.CType = ComponentTypeNV(rawValue: cStruct.CType.rawValue)!
-        self.DType = ComponentTypeNV(rawValue: cStruct.DType.rawValue)!
-        self.scope = ScopeNV(rawValue: cStruct.scope.rawValue)!
+        self.AType = ComponentTypeNV(rawValue: vkEnumValue(cStruct.AType.rawValue))!
+        self.BType = ComponentTypeNV(rawValue: vkEnumValue(cStruct.BType.rawValue))!
+        self.CType = ComponentTypeNV(rawValue: vkEnumValue(cStruct.CType.rawValue))!
+        self.DType = ComponentTypeNV(rawValue: vkEnumValue(cStruct.DType.rawValue))!
+        self.scope = ScopeNV(rawValue: vkEnumValue(cStruct.scope.rawValue))!
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkCooperativeMatrixPropertiesNV>) throws -> R) rethrows -> R {
@@ -12271,11 +12271,11 @@ public struct CooperativeMatrixPropertiesNV: CStructConvertible {
         cStruct.MSize = self.MSize
         cStruct.NSize = self.NSize
         cStruct.KSize = self.KSize
-        cStruct.AType = VkComponentTypeNV(rawValue: self.AType.rawValue)
-        cStruct.BType = VkComponentTypeNV(rawValue: self.BType.rawValue)
-        cStruct.CType = VkComponentTypeNV(rawValue: self.CType.rawValue)
-        cStruct.DType = VkComponentTypeNV(rawValue: self.DType.rawValue)
-        cStruct.scope = VkScopeNV(rawValue: self.scope.rawValue)
+        cStruct.AType = VkComponentTypeNV(rawValue: vkEnumRaw(self.AType.rawValue))
+        cStruct.BType = VkComponentTypeNV(rawValue: vkEnumRaw(self.BType.rawValue))
+        cStruct.CType = VkComponentTypeNV(rawValue: vkEnumRaw(self.CType.rawValue))
+        cStruct.DType = VkComponentTypeNV(rawValue: vkEnumRaw(self.DType.rawValue))
+        cStruct.scope = VkScopeNV(rawValue: vkEnumRaw(self.scope.rawValue))
         return try body(&cStruct)
     }
 }
@@ -12321,7 +12321,7 @@ public struct ImageViewHandleInfoNVX: CStructConvertible {
         cStruct.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_HANDLE_INFO_NVX
         cStruct.pNext = nil
         cStruct.imageView = self.imageView.handle
-        cStruct.descriptorType = VkDescriptorType(rawValue: self.descriptorType.rawValue)
+        cStruct.descriptorType = VkDescriptorType(rawValue: vkEnumRaw(self.descriptorType.rawValue))
         cStruct.sampler = self.sampler?.handle
         return try body(&cStruct)
     }
@@ -12429,9 +12429,9 @@ public struct PerformanceCounterKHR: CStructConvertible {
     public let uuid: (UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8)
 
     init(cStruct: VkPerformanceCounterKHR) {
-        self.unit = PerformanceCounterUnitKHR(rawValue: cStruct.unit.rawValue)!
-        self.scope = PerformanceCounterScopeKHR(rawValue: cStruct.scope.rawValue)!
-        self.storage = PerformanceCounterStorageKHR(rawValue: cStruct.storage.rawValue)!
+        self.unit = PerformanceCounterUnitKHR(rawValue: vkEnumValue(cStruct.unit.rawValue))!
+        self.scope = PerformanceCounterScopeKHR(rawValue: vkEnumValue(cStruct.scope.rawValue))!
+        self.storage = PerformanceCounterStorageKHR(rawValue: vkEnumValue(cStruct.storage.rawValue))!
         self.uuid = cStruct.uuid
     }
 
@@ -12439,9 +12439,9 @@ public struct PerformanceCounterKHR: CStructConvertible {
         var cStruct = VkPerformanceCounterKHR()
         cStruct.sType = VK_STRUCTURE_TYPE_PERFORMANCE_COUNTER_KHR
         cStruct.pNext = nil
-        cStruct.unit = VkPerformanceCounterUnitKHR(rawValue: self.unit.rawValue)
-        cStruct.scope = VkPerformanceCounterScopeKHR(rawValue: self.scope.rawValue)
-        cStruct.storage = VkPerformanceCounterStorageKHR(rawValue: self.storage.rawValue)
+        cStruct.unit = VkPerformanceCounterUnitKHR(rawValue: vkEnumRaw(self.unit.rawValue))
+        cStruct.scope = VkPerformanceCounterScopeKHR(rawValue: vkEnumRaw(self.scope.rawValue))
+        cStruct.storage = VkPerformanceCounterStorageKHR(rawValue: vkEnumRaw(self.storage.rawValue))
         cStruct.uuid = self.uuid
         return try body(&cStruct)
     }
@@ -12608,7 +12608,7 @@ public struct PipelineCoverageReductionStateCreateInfoNV: CStructConvertible {
 
     init(cStruct: VkPipelineCoverageReductionStateCreateInfoNV) {
         self.flags = PipelineCoverageReductionStateCreateFlagsNV(rawValue: cStruct.flags)
-        self.coverageReductionMode = CoverageReductionModeNV(rawValue: cStruct.coverageReductionMode.rawValue)!
+        self.coverageReductionMode = CoverageReductionModeNV(rawValue: vkEnumValue(cStruct.coverageReductionMode.rawValue))!
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkPipelineCoverageReductionStateCreateInfoNV>) throws -> R) rethrows -> R {
@@ -12616,7 +12616,7 @@ public struct PipelineCoverageReductionStateCreateInfoNV: CStructConvertible {
         cStruct.sType = VK_STRUCTURE_TYPE_PIPELINE_COVERAGE_REDUCTION_STATE_CREATE_INFO_NV
         cStruct.pNext = nil
         cStruct.flags = self.flags.rawValue
-        cStruct.coverageReductionMode = VkCoverageReductionModeNV(rawValue: self.coverageReductionMode.rawValue)
+        cStruct.coverageReductionMode = VkCoverageReductionModeNV(rawValue: vkEnumRaw(self.coverageReductionMode.rawValue))
         return try body(&cStruct)
     }
 }
@@ -12630,8 +12630,8 @@ public struct FramebufferMixedSamplesCombinationNV: CStructConvertible {
     public let colorSamples: SampleCountFlags
 
     init(cStruct: VkFramebufferMixedSamplesCombinationNV) {
-        self.coverageReductionMode = CoverageReductionModeNV(rawValue: cStruct.coverageReductionMode.rawValue)!
-        self.rasterizationSamples = SampleCountFlags(rawValue: cStruct.rasterizationSamples.rawValue)
+        self.coverageReductionMode = CoverageReductionModeNV(rawValue: vkEnumValue(cStruct.coverageReductionMode.rawValue))!
+        self.rasterizationSamples = SampleCountFlags(rawValue: vkEnumValue(cStruct.rasterizationSamples.rawValue))
         self.depthStencilSamples = SampleCountFlags(rawValue: cStruct.depthStencilSamples)
         self.colorSamples = SampleCountFlags(rawValue: cStruct.colorSamples)
     }
@@ -12640,8 +12640,8 @@ public struct FramebufferMixedSamplesCombinationNV: CStructConvertible {
         var cStruct = VkFramebufferMixedSamplesCombinationNV()
         cStruct.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_MIXED_SAMPLES_COMBINATION_NV
         cStruct.pNext = nil
-        cStruct.coverageReductionMode = VkCoverageReductionModeNV(rawValue: self.coverageReductionMode.rawValue)
-        cStruct.rasterizationSamples = VkSampleCountFlagBits(rawValue: self.rasterizationSamples.rawValue)
+        cStruct.coverageReductionMode = VkCoverageReductionModeNV(rawValue: vkEnumRaw(self.coverageReductionMode.rawValue))
+        cStruct.rasterizationSamples = VkSampleCountFlagBits(rawValue: vkEnumRaw(self.rasterizationSamples.rawValue))
         cStruct.depthStencilSamples = self.depthStencilSamples.rawValue
         cStruct.colorSamples = self.colorSamples.rawValue
         return try body(&cStruct)
@@ -12682,13 +12682,13 @@ public struct PerformanceValueINTEL: CStructConvertible {
     }
 
     init(cStruct: VkPerformanceValueINTEL) {
-        self.type = PerformanceValueTypeINTEL(rawValue: cStruct.type.rawValue)!
+        self.type = PerformanceValueTypeINTEL(rawValue: vkEnumValue(cStruct.type.rawValue))!
         self.data = cStruct.data
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkPerformanceValueINTEL>) throws -> R) rethrows -> R {
         var cStruct = VkPerformanceValueINTEL()
-        cStruct.type = VkPerformanceValueTypeINTEL(rawValue: self.type.rawValue)
+        cStruct.type = VkPerformanceValueTypeINTEL(rawValue: vkEnumRaw(self.type.rawValue))
         cStruct.data = self.data
         return try body(&cStruct)
     }
@@ -12726,14 +12726,14 @@ public struct QueryPoolPerformanceQueryCreateInfoINTEL: CStructConvertible {
     }
 
     init(cStruct: VkQueryPoolPerformanceQueryCreateInfoINTEL) {
-        self.performanceCountersSampling = QueryPoolSamplingModeINTEL(rawValue: cStruct.performanceCountersSampling.rawValue)!
+        self.performanceCountersSampling = QueryPoolSamplingModeINTEL(rawValue: vkEnumValue(cStruct.performanceCountersSampling.rawValue))!
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkQueryPoolPerformanceQueryCreateInfoINTEL>) throws -> R) rethrows -> R {
         var cStruct = VkQueryPoolPerformanceQueryCreateInfoINTEL()
         cStruct.sType = VK_STRUCTURE_TYPE_QUERY_POOL_CREATE_INFO_INTEL
         cStruct.pNext = nil
-        cStruct.performanceCountersSampling = VkQueryPoolSamplingModeINTEL(rawValue: self.performanceCountersSampling.rawValue)
+        cStruct.performanceCountersSampling = VkQueryPoolSamplingModeINTEL(rawValue: vkEnumRaw(self.performanceCountersSampling.rawValue))
         return try body(&cStruct)
     }
 }
@@ -12796,7 +12796,7 @@ public struct PerformanceOverrideInfoINTEL: CStructConvertible {
     }
 
     init(cStruct: VkPerformanceOverrideInfoINTEL) {
-        self.type = PerformanceOverrideTypeINTEL(rawValue: cStruct.type.rawValue)!
+        self.type = PerformanceOverrideTypeINTEL(rawValue: vkEnumValue(cStruct.type.rawValue))!
         self.enable = cStruct.enable == VK_TRUE
         self.parameter = cStruct.parameter
     }
@@ -12805,7 +12805,7 @@ public struct PerformanceOverrideInfoINTEL: CStructConvertible {
         var cStruct = VkPerformanceOverrideInfoINTEL()
         cStruct.sType = VK_STRUCTURE_TYPE_PERFORMANCE_OVERRIDE_INFO_INTEL
         cStruct.pNext = nil
-        cStruct.type = VkPerformanceOverrideTypeINTEL(rawValue: self.type.rawValue)
+        cStruct.type = VkPerformanceOverrideTypeINTEL(rawValue: vkEnumRaw(self.type.rawValue))
         cStruct.enable = VkBool32(self.enable ? VK_TRUE : VK_FALSE)
         cStruct.parameter = self.parameter
         return try body(&cStruct)
@@ -12822,14 +12822,14 @@ public struct PerformanceConfigurationAcquireInfoINTEL: CStructConvertible {
     }
 
     init(cStruct: VkPerformanceConfigurationAcquireInfoINTEL) {
-        self.type = PerformanceConfigurationTypeINTEL(rawValue: cStruct.type.rawValue)!
+        self.type = PerformanceConfigurationTypeINTEL(rawValue: vkEnumValue(cStruct.type.rawValue))!
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkPerformanceConfigurationAcquireInfoINTEL>) throws -> R) rethrows -> R {
         var cStruct = VkPerformanceConfigurationAcquireInfoINTEL()
         cStruct.sType = VK_STRUCTURE_TYPE_PERFORMANCE_CONFIGURATION_ACQUIRE_INFO_INTEL
         cStruct.pNext = nil
-        cStruct.type = VkPerformanceConfigurationTypeINTEL(rawValue: self.type.rawValue)
+        cStruct.type = VkPerformanceConfigurationTypeINTEL(rawValue: vkEnumRaw(self.type.rawValue))
         return try body(&cStruct)
     }
 }
@@ -12987,14 +12987,14 @@ public struct AttachmentReferenceStencilLayout: CStructConvertible {
     }
 
     init(cStruct: VkAttachmentReferenceStencilLayout) {
-        self.stencilLayout = ImageLayout(rawValue: cStruct.stencilLayout.rawValue)!
+        self.stencilLayout = ImageLayout(rawValue: vkEnumValue(cStruct.stencilLayout.rawValue))!
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkAttachmentReferenceStencilLayout>) throws -> R) rethrows -> R {
         var cStruct = VkAttachmentReferenceStencilLayout()
         cStruct.sType = VK_STRUCTURE_TYPE_ATTACHMENT_REFERENCE_STENCIL_LAYOUT
         cStruct.pNext = nil
-        cStruct.stencilLayout = VkImageLayout(rawValue: self.stencilLayout.rawValue)
+        cStruct.stencilLayout = VkImageLayout(rawValue: vkEnumRaw(self.stencilLayout.rawValue))
         return try body(&cStruct)
     }
 }
@@ -13011,16 +13011,16 @@ public struct AttachmentDescriptionStencilLayout: CStructConvertible {
     }
 
     init(cStruct: VkAttachmentDescriptionStencilLayout) {
-        self.stencilInitialLayout = ImageLayout(rawValue: cStruct.stencilInitialLayout.rawValue)!
-        self.stencilFinalLayout = ImageLayout(rawValue: cStruct.stencilFinalLayout.rawValue)!
+        self.stencilInitialLayout = ImageLayout(rawValue: vkEnumValue(cStruct.stencilInitialLayout.rawValue))!
+        self.stencilFinalLayout = ImageLayout(rawValue: vkEnumValue(cStruct.stencilFinalLayout.rawValue))!
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkAttachmentDescriptionStencilLayout>) throws -> R) rethrows -> R {
         var cStruct = VkAttachmentDescriptionStencilLayout()
         cStruct.sType = VK_STRUCTURE_TYPE_ATTACHMENT_DESCRIPTION_STENCIL_LAYOUT
         cStruct.pNext = nil
-        cStruct.stencilInitialLayout = VkImageLayout(rawValue: self.stencilInitialLayout.rawValue)
-        cStruct.stencilFinalLayout = VkImageLayout(rawValue: self.stencilFinalLayout.rawValue)
+        cStruct.stencilInitialLayout = VkImageLayout(rawValue: vkEnumRaw(self.stencilInitialLayout.rawValue))
+        cStruct.stencilFinalLayout = VkImageLayout(rawValue: vkEnumRaw(self.stencilFinalLayout.rawValue))
         return try body(&cStruct)
     }
 }
@@ -13126,7 +13126,7 @@ public struct PipelineExecutableStatisticKHR: CStructConvertible {
     init(cStruct: VkPipelineExecutableStatisticKHR) {
         self.name = String(unsafeBytesOf: cStruct.name)
         self.description = String(unsafeBytesOf: cStruct.description)
-        self.format = PipelineExecutableStatisticFormatKHR(rawValue: cStruct.format.rawValue)!
+        self.format = PipelineExecutableStatisticFormatKHR(rawValue: vkEnumValue(cStruct.format.rawValue))!
         self.value = cStruct.value
     }
 
@@ -13136,7 +13136,7 @@ public struct PipelineExecutableStatisticKHR: CStructConvertible {
         cStruct.pNext = nil
         cStruct.name = self.name.unsafeBytesCopy()
         cStruct.description = self.description.unsafeBytesCopy()
-        cStruct.format = VkPipelineExecutableStatisticFormatKHR(rawValue: self.format.rawValue)
+        cStruct.format = VkPipelineExecutableStatisticFormatKHR(rawValue: vkEnumRaw(self.format.rawValue))
         cStruct.value = self.value
         return try body(&cStruct)
     }
@@ -13431,7 +13431,7 @@ public struct PipelineRasterizationLineStateCreateInfoEXT: CStructConvertible {
     }
 
     init(cStruct: VkPipelineRasterizationLineStateCreateInfoEXT) {
-        self.lineRasterizationMode = LineRasterizationModeEXT(rawValue: cStruct.lineRasterizationMode.rawValue)!
+        self.lineRasterizationMode = LineRasterizationModeEXT(rawValue: vkEnumValue(cStruct.lineRasterizationMode.rawValue))!
         self.stippledLineEnable = cStruct.stippledLineEnable == VK_TRUE
         self.lineStippleFactor = cStruct.lineStippleFactor
         self.lineStipplePattern = cStruct.lineStipplePattern
@@ -13441,7 +13441,7 @@ public struct PipelineRasterizationLineStateCreateInfoEXT: CStructConvertible {
         var cStruct = VkPipelineRasterizationLineStateCreateInfoEXT()
         cStruct.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO_EXT
         cStruct.pNext = nil
-        cStruct.lineRasterizationMode = VkLineRasterizationModeEXT(rawValue: self.lineRasterizationMode.rawValue)
+        cStruct.lineRasterizationMode = VkLineRasterizationModeEXT(rawValue: vkEnumRaw(self.lineRasterizationMode.rawValue))
         cStruct.stippledLineEnable = VkBool32(self.stippledLineEnable ? VK_TRUE : VK_FALSE)
         cStruct.lineStippleFactor = self.lineStippleFactor
         cStruct.lineStipplePattern = self.lineStipplePattern
@@ -13584,7 +13584,7 @@ public struct PhysicalDeviceVulkan11Properties: CStructConvertible {
         self.subgroupSupportedStages = ShaderStageFlags(rawValue: cStruct.subgroupSupportedStages)
         self.subgroupSupportedOperations = SubgroupFeatureFlags(rawValue: cStruct.subgroupSupportedOperations)
         self.subgroupQuadOperationsInAllStages = cStruct.subgroupQuadOperationsInAllStages == VK_TRUE
-        self.pointClippingBehavior = PointClippingBehavior(rawValue: cStruct.pointClippingBehavior.rawValue)!
+        self.pointClippingBehavior = PointClippingBehavior(rawValue: vkEnumValue(cStruct.pointClippingBehavior.rawValue))!
         self.maxMultiviewViewCount = cStruct.maxMultiviewViewCount
         self.maxMultiviewInstanceIndex = cStruct.maxMultiviewInstanceIndex
         self.protectedNoFault = cStruct.protectedNoFault == VK_TRUE
@@ -13605,7 +13605,7 @@ public struct PhysicalDeviceVulkan11Properties: CStructConvertible {
         cStruct.subgroupSupportedStages = self.subgroupSupportedStages.rawValue
         cStruct.subgroupSupportedOperations = self.subgroupSupportedOperations.rawValue
         cStruct.subgroupQuadOperationsInAllStages = VkBool32(self.subgroupQuadOperationsInAllStages ? VK_TRUE : VK_FALSE)
-        cStruct.pointClippingBehavior = VkPointClippingBehavior(rawValue: self.pointClippingBehavior.rawValue)
+        cStruct.pointClippingBehavior = VkPointClippingBehavior(rawValue: vkEnumRaw(self.pointClippingBehavior.rawValue))
         cStruct.maxMultiviewViewCount = self.maxMultiviewViewCount
         cStruct.maxMultiviewInstanceIndex = self.maxMultiviewInstanceIndex
         cStruct.protectedNoFault = VkBool32(self.protectedNoFault ? VK_TRUE : VK_FALSE)
@@ -13933,12 +13933,12 @@ public struct PhysicalDeviceVulkan12Properties: CStructConvertible {
     }
 
     init(cStruct: VkPhysicalDeviceVulkan12Properties) {
-        self.driverID = DriverId(rawValue: cStruct.driverID.rawValue)!
+        self.driverID = DriverId(rawValue: vkEnumValue(cStruct.driverID.rawValue))!
         self.driverName = String(unsafeBytesOf: cStruct.driverName)
         self.driverInfo = String(unsafeBytesOf: cStruct.driverInfo)
         self.conformanceVersion = ConformanceVersion(cStruct: cStruct.conformanceVersion)
-        self.denormBehaviorIndependence = ShaderFloatControlsIndependence(rawValue: cStruct.denormBehaviorIndependence.rawValue)!
-        self.roundingModeIndependence = ShaderFloatControlsIndependence(rawValue: cStruct.roundingModeIndependence.rawValue)!
+        self.denormBehaviorIndependence = ShaderFloatControlsIndependence(rawValue: vkEnumValue(cStruct.denormBehaviorIndependence.rawValue))!
+        self.roundingModeIndependence = ShaderFloatControlsIndependence(rawValue: vkEnumValue(cStruct.roundingModeIndependence.rawValue))!
         self.shaderSignedZeroInfNanPreserveFloat16 = cStruct.shaderSignedZeroInfNanPreserveFloat16 == VK_TRUE
         self.shaderSignedZeroInfNanPreserveFloat32 = cStruct.shaderSignedZeroInfNanPreserveFloat32 == VK_TRUE
         self.shaderSignedZeroInfNanPreserveFloat64 = cStruct.shaderSignedZeroInfNanPreserveFloat64 == VK_TRUE
@@ -13992,12 +13992,12 @@ public struct PhysicalDeviceVulkan12Properties: CStructConvertible {
             var cStruct = VkPhysicalDeviceVulkan12Properties()
             cStruct.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_PROPERTIES
             cStruct.pNext = nil
-            cStruct.driverID = VkDriverId(rawValue: self.driverID.rawValue)
+            cStruct.driverID = VkDriverId(rawValue: vkEnumRaw(self.driverID.rawValue))
             cStruct.driverName = self.driverName.unsafeBytesCopy()
             cStruct.driverInfo = self.driverInfo.unsafeBytesCopy()
             cStruct.conformanceVersion = ptr_conformanceVersion.pointee
-            cStruct.denormBehaviorIndependence = VkShaderFloatControlsIndependence(rawValue: self.denormBehaviorIndependence.rawValue)
-            cStruct.roundingModeIndependence = VkShaderFloatControlsIndependence(rawValue: self.roundingModeIndependence.rawValue)
+            cStruct.denormBehaviorIndependence = VkShaderFloatControlsIndependence(rawValue: vkEnumRaw(self.denormBehaviorIndependence.rawValue))
+            cStruct.roundingModeIndependence = VkShaderFloatControlsIndependence(rawValue: vkEnumRaw(self.roundingModeIndependence.rawValue))
             cStruct.shaderSignedZeroInfNanPreserveFloat16 = VkBool32(self.shaderSignedZeroInfNanPreserveFloat16 ? VK_TRUE : VK_FALSE)
             cStruct.shaderSignedZeroInfNanPreserveFloat32 = VkBool32(self.shaderSignedZeroInfNanPreserveFloat32 ? VK_TRUE : VK_FALSE)
             cStruct.shaderSignedZeroInfNanPreserveFloat64 = VkBool32(self.shaderSignedZeroInfNanPreserveFloat64 ? VK_TRUE : VK_FALSE)
@@ -14133,14 +14133,14 @@ public struct RenderPassTransformBeginInfoQCOM: CStructConvertible {
     }
 
     init(cStruct: VkRenderPassTransformBeginInfoQCOM) {
-        self.transform = SurfaceTransformFlagsKHR(rawValue: cStruct.transform.rawValue)
+        self.transform = SurfaceTransformFlagsKHR(rawValue: vkEnumValue(cStruct.transform.rawValue))
     }
 
     func withCStruct<R>(_ body: (UnsafePointer<VkRenderPassTransformBeginInfoQCOM>) throws -> R) rethrows -> R {
         var cStruct = VkRenderPassTransformBeginInfoQCOM()
         cStruct.sType = VK_STRUCTURE_TYPE_RENDER_PASS_TRANSFORM_BEGIN_INFO_QCOM
         cStruct.pNext = nil
-        cStruct.transform = VkSurfaceTransformFlagBitsKHR(rawValue: self.transform.rawValue)
+        cStruct.transform = VkSurfaceTransformFlagBitsKHR(rawValue: vkEnumRaw(self.transform.rawValue))
         return try body(&cStruct)
     }
 }
@@ -14157,7 +14157,7 @@ public struct CommandBufferInheritanceRenderPassTransformInfoQCOM: CStructConver
     }
 
     init(cStruct: VkCommandBufferInheritanceRenderPassTransformInfoQCOM) {
-        self.transform = SurfaceTransformFlagsKHR(rawValue: cStruct.transform.rawValue)
+        self.transform = SurfaceTransformFlagsKHR(rawValue: vkEnumValue(cStruct.transform.rawValue))
         self.renderArea = Rect2D(cStruct: cStruct.renderArea)
     }
 
@@ -14166,7 +14166,7 @@ public struct CommandBufferInheritanceRenderPassTransformInfoQCOM: CStructConver
             var cStruct = VkCommandBufferInheritanceRenderPassTransformInfoQCOM()
             cStruct.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_RENDER_PASS_TRANSFORM_INFO_QCOM
             cStruct.pNext = nil
-            cStruct.transform = VkSurfaceTransformFlagBitsKHR(rawValue: self.transform.rawValue)
+            cStruct.transform = VkSurfaceTransformFlagBitsKHR(rawValue: vkEnumRaw(self.transform.rawValue))
             cStruct.renderArea = ptr_renderArea.pointee
             return try body(&cStruct)
         }

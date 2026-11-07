@@ -132,8 +132,8 @@ bool_conversion = Conversion(
 
 def enum_conversion(c_enum: str, swift_enum: str) -> Conversion:
     return Conversion(
-        swift_value_template=f'{swift_enum}(rawValue: $value.rawValue)!',
-        c_value_template=f'{c_enum}(rawValue: $value.rawValue)'
+        swift_value_template=f'{swift_enum}(rawValue: vkEnumValue($value.rawValue))!',
+        c_value_template=f'{c_enum}(rawValue: vkEnumRaw($value.rawValue))'
     )
 
 
@@ -146,8 +146,8 @@ def option_set_conversion(option_set: str) -> Conversion:
 
 def option_set_bit_conversion(c_enum: str, option_set: str) -> Conversion:
     return Conversion(
-        swift_value_template=f'{option_set}(rawValue: $value.rawValue)',
-        c_value_template=f'{c_enum}(rawValue: $value.rawValue)'
+        swift_value_template=f'{option_set}(rawValue: vkEnumValue($value.rawValue))',
+        c_value_template=f'{c_enum}(rawValue: vkEnumRaw($value.rawValue))'
     )
 
 
