@@ -1,6 +1,8 @@
 import CVulkan
 #if os(Linux)
     import Glibc
+#elseif os(Windows)
+    import WinSDK
 #else
     import Darwin
 #endif
@@ -18,29 +20,44 @@ public enum LoaderError: Error {
 public class DynamicLoader: Loader {
     let handle: UnsafeMutableRawPointer
     public let vkGetInstanceProcAddr: PFN_vkGetInstanceProcAddr
-    
+
     public init(path: String) throws {
-        guard let handle = dlopen(path, RTLD_LAZY) else {
-            throw LoaderError.loaderNotFound
-        }
-        guard let vkGetInstanceProcAddr = dlsym(handle, "vkGetInstanceProcAddr") else {
-            dlclose(handle)
-            throw LoaderError.symbolNotFound
-        }
+        #if os(Windows)
+            let loadedhandle = path.withCString(encodedAs: UTF16.self) { LoadLibraryW($0) }
+            guard let handle = loadedhandle else { throw LoaderError.loaderNotFound }
+            guard let vkGetInstanceProcAddr = GetProcAddress(handle, "vkGetInstanceProcAddr") else {
+                FreeLibrary(handle)
+                throw LoaderError.symbolNotFound
+            }
+        #else
+            guard let handle = dlopen(path, RTLD_LAZY) else {
+                throw LoaderError.loaderNotFound
+            }
+            guard let vkGetInstanceProcAddr = dlsym(handle, "vkGetInstanceProcAddr") else {
+                dlclose(handle)
+                throw LoaderError.symbolNotFound
+            }
+        #endif
         self.handle = handle
         self.vkGetInstanceProcAddr = unsafeBitCast(vkGetInstanceProcAddr, to: PFN_vkGetInstanceProcAddr.self)
     }
-    
+
     public convenience init() throws {
         #if os(Linux)
             try self.init(path: "libvulkan.so.1")
+        #elseif os(Windows)
+            try self.init(path: "vulkan-1.dll")
         #else
             try self.init(path: "libvulkan.1.dylib")
         #endif
     }
-    
+
     deinit {
-        dlclose(handle)
+        #if os(Windows)
+            FreeLibrary(handle)
+        #else
+            dlclose(handle)
+        #endif
     }
 }
 
