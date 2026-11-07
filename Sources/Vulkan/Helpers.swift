@@ -14,7 +14,7 @@ func vkEnumRaw(_ value: UInt32) -> VkEnumRaw {
     #endif
 }
 
-func vkEnumValue(_ value: vkEnumRaw) -> UInt32 {
+func vkEnumValue(_ value: VkEnumRaw) -> UInt32 {
     #if os(Windows)
         return UInt32(bitPattern: value)
     #else

@@ -18,7 +18,11 @@ public enum LoaderError: Error {
 }
 
 public class DynamicLoader: Loader {
-    let handle: UnsafeMutableRawPointer
+    #if os(Windows)
+        let handle: HMODULE
+    #else
+        let handle: UnsafeMutableRawPointer
+    #endif
     public let vkGetInstanceProcAddr: PFN_vkGetInstanceProcAddr
 
     public init(path: String) throws {

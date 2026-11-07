@@ -248,9 +248,11 @@ public class PhysicalDevice: _HandleContainer {
     }
 
     public func getSurfacePresentModesKHR(surface: SurfaceKHR) throws -> Array<PresentModeKHR> {
-        try enumerate { pPresentModes, pPresentModeCount in
+
+        let modes: [VkPresentModeKHR] = try enumerate { pPresentModes, pPresentModeCount in
             self.instance.dispatchTable.vkGetPhysicalDeviceSurfacePresentModesKHR(self.handle, surface.handle, pPresentModeCount, pPresentModes)
-        }.map { PresentModeKHR(rawValue: vkEnumValue($0.rawValue))! }
+        }
+        return modes.map { PresentModeKHR(rawValue: vkEnumValue($0.rawValue))! }
     }
 
     public func getExternalImageFormatPropertiesNV(format: Format, type: ImageType, tiling: ImageTiling, usage: ImageUsageFlags, flags: ImageCreateFlags, externalHandleType: ExternalMemoryHandleTypeFlagsNV) throws -> ExternalImageFormatPropertiesNV {
@@ -2457,4 +2459,3 @@ public class DebugUtilsMessengerEXT: _HandleContainer {
         self.instance.dispatchTable.vkDestroyDebugUtilsMessengerEXT(self.instance.handle, self.handle, nil)
     }
 }
-
