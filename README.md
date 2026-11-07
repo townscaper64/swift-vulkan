@@ -49,3 +49,13 @@ Swift-vulkan is a relatively new project, and there are still some important mil
 - Optimize struct conversion (currently, a conversion is performed each time a struct is passed to a command)
 - Use preprocessor conditions to enable specific types at compile time (could do this for all extensions / features, or just for platform-specific extensions)
 - Parse Vulkan documentation and generate Swift comments
+
+## Building on Windows
+To build swift-vulkan on Windows use this command:
+```powershell
+swift build -Xcc -I"C:\path\to\vulkan\Include"
+```
+To build swift-vulkan with CGLFW:
+```powershell
+swift build -Xcc -I"C:\path\to\vulkan\Include" -Xcc -I"C:\path\to\glfw3\include" -Xlinker /LIBPATH:"C:\path\to\glfw3\lib"
+```
