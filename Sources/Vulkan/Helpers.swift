@@ -1,5 +1,26 @@
 import CVulkan
 
+#if os(Windows)
+    typealias VkEnumRaw = Int32
+#else
+    typealias VkEnumRaw = UInt32
+#endif
+
+func vkEnumRaw(_ value: UInt32) -> VkEnumRaw {
+    #if os(Windows)
+        return Int32(bitPattern: value)
+    #else
+        return value
+    #endif
+}
+
+func vkEnumValue(_ value: vkEnumRaw) -> UInt32 {
+    #if os(Windows)
+        return UInt32(bitPattern: value)
+    #else
+        return value
+    #endif
+}
 
 func checkResult(_ result: VkResult) throws {
     if result.rawValue < 0 {
@@ -32,7 +53,7 @@ extension String {
             String(cString: ptr.bindMemory(to: CChar.self).baseAddress!)
         }
     }
-    
+
     func unsafeBytesCopy<T>() -> T {
         let size = MemoryLayout<T>.size
         let ptr = UnsafeMutableBufferPointer<CChar>.allocate(capacity: size)
@@ -94,7 +115,7 @@ extension Optional {
         guard let array = self else { return try body(UnsafeBufferPointer(start: nil, count: 0)) }
         return try array.withCStructBufferPointer(body)
     }
-    
+
     func withOptionalUnsafeBufferPointer<T, R>(_ body: (UnsafeBufferPointer<T>) throws -> R) rethrows -> R where Wrapped == Array<T> {
         guard let array = self else { return try body(UnsafeBufferPointer(start: nil, count: 0)) }
         return try array.withUnsafeBufferPointer(body)
@@ -115,20 +136,20 @@ func enumerate<R>(_ body: (UnsafeMutablePointer<R>?, UnsafeMutablePointer<UInt32
     var count: UInt32 = 0
     var result = VK_SUCCESS
     var array: [R]
-    
+
     repeat {
         try checkResult(body(nil, &count))
-    
+
         if (count == 0) {
             return []
         }
-    
+
         array = Array<R>(unsafeUninitializedCapacity: Int(count)) { buffer, initializedCount in
             result = body(buffer.baseAddress!, &count)
             initializedCount = Int(count)
         }
     } while result == VK_INCOMPLETE
-    
+
     try checkResult(result)
     return array
 }
@@ -136,11 +157,11 @@ func enumerate<R>(_ body: (UnsafeMutablePointer<R>?, UnsafeMutablePointer<UInt32
 func enumerate<R>(_ body: (UnsafeMutablePointer<R>?, UnsafeMutablePointer<UInt32>) -> Void) -> [R] {
     var count: UInt32 = 0
     body(nil, &count)
-    
+
     if (count == 0) {
         return []
     }
-    
+
     return Array<R>(unsafeUninitializedCapacity: Int(count)) { buffer, initializedCount in
         body(buffer.baseAddress!, &count)
         initializedCount = Int(count)
